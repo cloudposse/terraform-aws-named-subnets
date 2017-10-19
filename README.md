@@ -40,15 +40,15 @@ module "subnets" {
 
 ## Outputs
 
-| Name                    | Description                 |
-|:------------------------|:----------------------------|
-| igw_id                  | ID of IGW                   |
-| ngw_id                  | ID of NGW                   |
-| private_route_table_ids | IDs of private route tables |
-| private_subnet_ids      | IDs of private subnets      |
-| public_route_table_ids  | IDs of public route tables  |
-| public_subnet_ids       | IDs of public subnets       |
-| vpc_id                  | ID of VPC                   |
+| Name                      | Description                 |
+|:--------------------------|:----------------------------|
+| `igw_id`                  | ID of IGW                   |
+| `ngw_id`                  | ID of NGW                   |
+| `private_route_table_ids` | IDs of private route tables |
+| `private_subnet_ids`      | IDs of private subnets      |
+| `public_route_table_ids`  | IDs of public route tables  |
+| `public_subnet_ids`       | IDs of public subnets       |
+| `vpc_id`                  | ID of VPC                   |
 
 ## License
 
