@@ -3,12 +3,8 @@ module "vpc" {
   name       = "${var.name}"
   namespace  = "${var.namespace}"
   stage      = "${var.stage}"
-  create_vpc = "${signum(length(var.vpc_id)) == 1 ? 1 : 0}"
-}
-
-# Get object aws_vpc by vpc_id
-data "aws_vpc" "default" {
-  id = "${signum(length(var.vpc_id)) == 1 ? var.vpc_id : module.vpc.vpc_id}"
+  cidr_block = "${var.cidr_block}"
+  create_vpc = "${signum(length(var.vpc_id)) == 1 ? 0 : 1}"
 }
 
 data "aws_availability_zones" "available" {}

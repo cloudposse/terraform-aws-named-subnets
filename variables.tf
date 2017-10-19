@@ -32,11 +32,13 @@ variable "tags" {
 }
 
 variable "availability_zone" {
-  default = ""
+  description = "Availability Zone"
+  default     = ""
 }
 
 variable "vpc_id" {
-  default = ""
+  description = "ID of VPC"
+  default     = ""
 }
 
 variable "igw_id" {
@@ -47,6 +49,12 @@ variable "igw_id" {
 variable "ngw_id" {
   description = "ID of NGW"
   default     = ""
+}
+
+variable "cidr_block" {
+  type        = "string"
+  description = "CIDR for the VPC"
+  default     = "10.0.0.0/16"
 }
 
 variable "private_cidr_blocks" {
@@ -60,17 +68,20 @@ variable "public_cidr_blocks" {
 }
 
 variable "additional_private_routes" {
-  type    = "map"
-  default = {}
+  description = "Map of additional routers for private subnets"
+  type        = "map"
+  default     = {}
 }
 
 variable "additional_public_routes" {
-  type    = "map"
-  default = {}
+  description = "Map of additional routers for public subnets"
+  type        = "map"
+  default     = {}
 }
 
 variable "egress" {
-  type = "list"
+  description = " Specifies an egress rules"
+  type        = "list"
 
   default = [
     {
@@ -85,7 +96,8 @@ variable "egress" {
 }
 
 variable "ingress" {
-  type = "list"
+  description = "Specifies an ingress rule"
+  type        = "list"
 
   default = [
     {
@@ -100,9 +112,11 @@ variable "ingress" {
 }
 
 variable "private_network_acl_id" {
-  default = ""
+  description = "Network ACL ID that will be added to private subnets. If empty, a new ACL will be created "
+  default     = ""
 }
 
 variable "public_network_acl_id" {
-  default = ""
+  description = "Network ACL ID that will be added to public subnets. If empty, a new ACL will be created"
+  default     = ""
 }

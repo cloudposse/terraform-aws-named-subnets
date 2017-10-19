@@ -10,20 +10,20 @@ module "private_label" {
 
 resource "aws_subnet" "private" {
   count             = "${length(compact(var.private_cidr_blocks))}"
-  vpc_id            = "${data.aws_vpc.default.id}"
+  vpc_id            = "${signum(length(var.vpc_id)) == 1 ? var.vpc_id : module.vpc.vpc_id}"
   availability_zone = "${signum(length(var.availability_zone)) == 1 ? var.availability_zone : data.aws_availability_zones.available.names[0]}"
   cidr_block        = "${element(var.private_cidr_blocks, count.index)}"
 
   tags = {
-    "Name"      = "${module.private_subnet_label.id}${var.delimiter}${replace(element(var.availability_zones, count.index),"-",var.delimiter)}"
-    "Stage"     = "${module.private_subnet_label.stage}"
-    "Namespace" = "${module.private_subnet_label.namespace}"
+    "Name"      = "${module.private_label.id}${var.delimiter}${signum(length(var.availability_zone)) == 1 ? var.availability_zone : data.aws_availability_zones.available.names[0]}"
+    "Stage"     = "${module.private_label.stage}"
+    "Namespace" = "${module.private_label.namespace}"
   }
 }
 
 resource "aws_route_table" "private" {
   count  = "${length(compact(var.private_cidr_blocks))}"
-  vpc_id = "${data.aws_vpc.default.id}"
+  vpc_id = "${signum(length(var.vpc_id)) == 1 ? var.vpc_id : module.vpc.vpc_id}"
 
   route {
     cidr_block     = "0.0.0.0/0"
@@ -40,7 +40,7 @@ resource "aws_route_table" "private" {
 }
 
 resource "aws_route" "private" {
-  count                  = "${length(compact(var.private_cidr_blocks))}"
+  count                  = "${length(compact(values(var.additional_private_routes)))}"
   route_table_id         = "${element(aws_route_table.private.*.id, count.index)}"
   destination_cidr_block = "${element(coalescelist(keys(var.additional_private_routes), list("workaround")), count.index)}"
   gateway_id             = "${lookup(var.additional_private_routes, element(coalescelist(keys(var.additional_private_routes), list("workaround")), count.index), "workaround")}"
@@ -54,7 +54,7 @@ resource "aws_route_table_association" "private" {
 
 resource "aws_network_acl" "private" {
   count      = "${signum(length(var.private_network_acl_id)) == 0 ? 1 : 0}"
-  vpc_id     = "${data.aws_vpc.default.id}"
+  vpc_id     = "${signum(length(var.vpc_id)) == 1 ? var.vpc_id : module.vpc.vpc_id}"
   subnet_ids = ["${aws_subnet.private.*.id}"]
   egress     = "${var.egress}"
   ingress    = "${var.ingress}"

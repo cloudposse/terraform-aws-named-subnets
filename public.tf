@@ -10,24 +10,24 @@ module "public_label" {
 
 resource "aws_subnet" "public" {
   count             = "${length(compact(var.public_cidr_blocks))}"
-  vpc_id            = "${data.aws_vpc.default.id}"
+  vpc_id            = "${signum(length(var.vpc_id)) == 1 ? var.vpc_id : module.vpc.vpc_id}"
   availability_zone = "${signum(length(var.availability_zone)) == 1 ? var.availability_zone : data.aws_availability_zones.available.names[0]}"
   cidr_block        = "${element(var.public_cidr_blocks, count.index)}"
 
   tags = {
-    "Name"      = "${module.public_subnet_label.id}${var.delimiter}${replace(element(var.availability_zones, count.index),"-",var.delimiter)}"
-    "Stage"     = "${module.public_subnet_label.stage}"
-    "Namespace" = "${module.public_subnet_label.namespace}"
+    "Name"      = "${module.public_label.id}${var.delimiter}${signum(length(var.availability_zone)) == 1 ? var.availability_zone : data.aws_availability_zones.available.names[0]}"
+    "Stage"     = "${module.public_label.stage}"
+    "Namespace" = "${module.public_label.namespace}"
   }
 }
 
 resource "aws_route_table" "public" {
   count  = "${length(compact(var.public_cidr_blocks))}"
-  vpc_id = "${data.aws_vpc.default.id}"
+  vpc_id = "${signum(length(var.vpc_id)) == 1 ? var.vpc_id : module.vpc.vpc_id}"
 
   route {
-    cidr_block     = "0.0.0.0/0"
-    nat_gateway_id = "${signum(length(var.igw_id)) == 1 ? var.igw_id : aws_nat_gateway.default.id}"
+    cidr_block = "0.0.0.0/0"
+    gateway_id = "${signum(length(var.igw_id)) == 1 ? var.igw_id : aws_nat_gateway.default.id}"
   }
 
   tags = "${module.public_label.tags}"
@@ -40,7 +40,7 @@ resource "aws_route_table" "public" {
 }
 
 resource "aws_route" "public" {
-  count                  = "${length(compact(var.public_cidr_blocks))}"
+  count                  = "${length(compact(values(var.additional_public_routes)))}"
   route_table_id         = "${element(aws_route_table.public.*.id, count.index)}"
   destination_cidr_block = "${element(coalescelist(keys(var.additional_public_routes), list("workaround")), count.index)}"
   gateway_id             = "${lookup(var.additional_public_routes, element(coalescelist(keys(var.additional_public_routes), list("workaround")), count.index), "workaround")}"
@@ -54,7 +54,7 @@ resource "aws_route_table_association" "public" {
 
 resource "aws_network_acl" "public" {
   count      = "${signum(length(var.public_network_acl_id)) == 0 ? 1 : 0}"
-  vpc_id     = "${data.aws_vpc.default.id}"
+  vpc_id     = "${signum(length(var.vpc_id)) == 1 ? var.vpc_id : module.vpc.vpc_id}"
   subnet_ids = ["${aws_subnet.public.*.id}"]
   egress     = "${var.egress}"
   ingress    = "${var.ingress}"
