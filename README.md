@@ -44,8 +44,8 @@ module "public_subnets" {
 | `availability_zones` |   ``    | The  list of Availability Zones where subnets will be created (e.g. `["us-east-1a", "us-east-1b"]`).                |   Yes    |
 | `network_acl_id`     |   ``    | Network ACL ID that will be added to the subnets.  If empty, a new ACL will be created                              |    No    |
 | `additional_routes`  |  `{}`   | Map of Additional routes for subnets (e.g. `{"10.0.0.2/24" = igw-0038f979}`)                                        |    No    |
-| `egress`             |  `[]`   | Specifies an egress rules                                                                                           |    No    |
-| `ingress`            |  `[]`   | Specifies an ingress rule                                                                                           |    No    |
+| `egress`             |  `[]`   | List of Network ACL CIDRs permitted egress                                                                          |    No    |
+| `ingress`            |  `[]`   | List of Network ACL CIDRs permitted ingress                                                                         |    No    |
 
 ## Outputs
 
