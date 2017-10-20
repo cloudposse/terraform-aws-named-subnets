@@ -1,16 +1,35 @@
-module "vpc" {
-  source     = "git::https://github.com/cloudposse/terraform-aws-vpc.git?ref=remove_subnets"
-  name       = "${var.name}"
-  namespace  = "${var.namespace}"
-  stage      = "${var.stage}"
-  cidr_block = "${var.cidr_block}"
-  create_vpc = "${signum(length(var.vpc_id)) == 1 ? 0 : 1}"
-}
-
 data "aws_availability_zones" "available" {}
 
+data "aws_vpc" "default" {
+  id = "${var.vpc_id}"
+}
+
+module "subnets_label" {
+  source     = "git::https://github.com/cloudposse/terraform-null-label.git?ref=tags/0.2.2"
+  namespace  = "${var.namespace}"
+  name       = "${var.name}"
+  stage      = "${var.stage}"
+  delimiter  = "${var.delimiter}"
+  attributes = ["subnet"]
+  tags       = "${var.tags}"
+}
+
+resource "aws_subnet" "default" {
+  count             = "${length(compact(var.names)) * length(compact(var.availability_zones))}"
+  vpc_id            = "${var.vpc_id}"
+  availability_zone = "${element(var.availability_zones, count.index)}"
+  cidr_block        = "${cidrsubnet(length(var.base_cidr) > 0 ? var.base_cidr : data.aws_vpc.default.cidr_block, ceil(log(length(compact(var.names)) * length(compact(var.availability_zones)) * 2, 2)), count.index)}"
+
+  tags = {
+    "Name"      = "${module.subnets_label.id}${var.delimiter}${element(var.names, count.index)}${var.delimiter}${element(var.availability_zones, count.index)}"
+    "Stage"     = "${module.subnets_label.stage}"
+    "Namespace" = "${module.subnets_label.namespace}"
+  }
+}
+
+## NGW
 resource "aws_eip" "default" {
-  count = "${signum(length(var.ngw_id)) == 0 ? 1 : 0}"
+  count = "${var.nat_enabled ? length(compact(var.names)) * length(compact(var.availability_zones)) : 0}"
   vpc   = true
 
   lifecycle {
@@ -18,16 +37,48 @@ resource "aws_eip" "default" {
   }
 }
 
-#### Private
-
 resource "aws_nat_gateway" "default" {
-  count         = "${signum(length(var.ngw_id)) == 0 ? 1 : 0}"
-  allocation_id = "${aws_eip.default.id}"
-  subnet_id     = "${element(aws_subnet.private.*.id, count.index)}"
+  count         = "${var.nat_enabled ? length(compact(var.names)) * length(compact(var.availability_zones)) : 0}"
+  allocation_id = "${element(aws_eip.default.*.id, count.index)}"
+  subnet_id     = "${element(aws_subnet.default.*.id, count.index)}"
 
   lifecycle {
     create_before_destroy = true
   }
+}
 
-  depends_on = ["aws_subnet.private"]
+resource "aws_route_table" "default" {
+  count  = "${length(compact(var.names)) * length(compact(var.availability_zones))}"
+  vpc_id = "${var.vpc_id}"
+  tags   = "${module.subnets_label.tags}"
+}
+
+resource "aws_route" "default" {
+  count                  = "${length(compact(var.names)) * length(compact(var.availability_zones))}"
+  route_table_id         = "${element(aws_route_table.default.*.id, count.index)}"
+  nat_gateway_id         = "${replace(element(coalescelist(aws_nat_gateway.default.*.id, list("workaround")), count.index), "workaround", "")}"
+  gateway_id             = "${var.igw_id}"
+  destination_cidr_block = "0.0.0.0/0"
+}
+
+resource "aws_route" "additional" {
+  count                  = "${length(compact(values(var.additional_routes))) > 0 ? length(compact(var.names)) * length(compact(var.availability_zones)) : 0}"
+  route_table_id         = "${element(aws_route_table.default.*.id, count.index)}"
+  destination_cidr_block = "${element(coalescelist(keys(var.additional_routes), list("workaround")), count.index)}"
+  gateway_id             = "${lookup(var.additional_routes, element(coalescelist(keys(var.additional_routes), list("workaround")), count.index), "workaround")}"
+}
+
+resource "aws_route_table_association" "default" {
+  count          = "${length(compact(var.names)) * length(compact(var.availability_zones))}"
+  subnet_id      = "${element(aws_subnet.default.*.id, count.index)}"
+  route_table_id = "${element(aws_route_table.default.*.id, count.index)}"
+}
+
+resource "aws_network_acl" "default" {
+  count      = "${signum(length(var.network_acl_id)) == 0 ? 1 : 0}"
+  vpc_id     = "${data.aws_vpc.default.id}"
+  subnet_ids = ["${aws_subnet.default.*.id}"]
+  egress     = "${var.egress}"
+  ingress    = "${var.ingress}"
+  tags       = "${module.subnets_label.tags}"
 }

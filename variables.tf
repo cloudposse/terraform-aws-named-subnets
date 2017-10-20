@@ -31,13 +31,22 @@ variable "tags" {
   description = "Additional tags (e.g. `map('BusinessUnit`,`XYZ`)"
 }
 
-variable "availability_zone" {
-  description = "Availability Zone"
-  default     = ""
+variable "availability_zones" {
+  description = "Availability Zones"
+  type        = "list"
+}
+
+variable "names" {
+  type        = "list"
+  description = "list of subnets names"
 }
 
 variable "vpc_id" {
   description = "ID of VPC"
+}
+
+variable "base_cidr" {
+  description = "The base CIDR block which will be divided into subnet CIDR blocks (e.g. `10.0.0.0/16`)"
   default     = ""
 }
 
@@ -46,37 +55,18 @@ variable "igw_id" {
   default     = ""
 }
 
-variable "ngw_id" {
-  description = "ID of NGW"
+variable "nat_enabled" {
+  default = "true"
+}
+
+variable "additional_routes" {
+  type    = "map"
+  default = {}
+}
+
+variable "network_acl_id" {
+  description = "Network ACL ID that will be added to the subnets. If empty, a new ACL will be created "
   default     = ""
-}
-
-variable "cidr_block" {
-  type        = "string"
-  description = "CIDR for the VPC"
-  default     = "10.0.0.0/16"
-}
-
-variable "private_cidr_blocks" {
-  description = "List of pirvate CIDR blocks"
-  type        = "list"
-}
-
-variable "public_cidr_blocks" {
-  description = "List of public CIDR blocks"
-  type        = "list"
-}
-
-variable "additional_private_routes" {
-  description = "Map of additional routers for private subnets"
-  type        = "map"
-  default     = {}
-}
-
-variable "additional_public_routes" {
-  description = "Map of additional routers for public subnets"
-  type        = "map"
-  default     = {}
 }
 
 variable "egress" {
@@ -109,14 +99,4 @@ variable "ingress" {
       protocol   = "-1"
     },
   ]
-}
-
-variable "private_network_acl_id" {
-  description = "Network ACL ID that will be added to private subnets. If empty, a new ACL will be created "
-  default     = ""
-}
-
-variable "public_network_acl_id" {
-  description = "Network ACL ID that will be added to public subnets. If empty, a new ACL will be created"
-  default     = ""
 }

@@ -1,34 +1,39 @@
-output "public_subnet_ids" {
-  value       = ["${aws_subnet.public.*.id}"]
-  description = "IDs of public subnets"
+output "ngw_ids" {
+  value       = ["${aws_nat_gateway.default.*.id}"]
+  description = "IDs of NAT Gateways"
 }
 
-output "private_subnet_ids" {
-  value       = ["${aws_subnet.private.*.id}"]
-  description = "IDs of private subnets"
+output "ngw_private_ips" {
+  value       = ["${aws_nat_gateway.default.*.private_ip}"]
+  description = "The private IP addresses of the NAT Gateways"
 }
 
-output "public_route_table_ids" {
-  value       = ["${aws_route_table.public.*.id}"]
-  description = "IDs of public route tables"
+output "ngw_public_ips" {
+  value       = ["${aws_nat_gateway.default.*.public_ip}"]
+  description = "The public IP addresses of the NAT Gateways"
 }
 
-output "private_route_table_ids" {
-  value       = ["${aws_route_table.private.*.id}"]
-  description = "IDs of private route tables"
+output "subnet_ids" {
+  value       = ["${aws_subnet.default.*.id}"]
+  description = "IDs of subnets"
 }
 
-output "vpc_id" {
-  value       = "${signum(length(var.vpc_id)) == 1 ? var.vpc_id : module.vpc.vpc_id}"
-  description = "ID of VPC"
+module "private_subnets" {
+  namespace          = "${var.namespace}"
+  stage              = "${var.stage}"
+  names              = ["charlie", "echo", "bravo"]
+  vpc_id             = "vpc-1234"
+  base_cidr          = "10.0.1.0.1/24"
+  availability_zones = ["us-east-1a", "us-east-1b"]
+  nat_enabled        = "true"
 }
 
-output "igw_id" {
-  value       = "${signum(length(var.igw_id)) == 1 ? var.igw_id : module.vpc.igw_id}"
-  description = "ID of IGW"
-}
-
-output "ngw_id" {
-  value       = "${signum(length(var.ngw_id)) == 1 ? var.ngw_id : aws_nat_gateway.default.id}"
-  description = "ID of NGW"
+module "public_subnets" {
+  namespace          = "${var.namespace}"
+  stage              = "${var.stage}"
+  names              = ["apples", "oranges", "grapes"]
+  vpc_id             = "vpc-1234"
+  base_cidr          = "10.0.2.0.1/24"
+  igw_id             = "ig-1234"
+  availability_zones = ["us-east-1a", "us-east-1b"]
 }
