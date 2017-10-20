@@ -56,7 +56,7 @@ variable "igw_id" {
 }
 
 variable "nat_enabled" {
-  default = "true"
+  default = "false"
 }
 
 variable "additional_routes" {
