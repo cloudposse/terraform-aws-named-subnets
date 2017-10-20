@@ -32,7 +32,7 @@ resource "aws_subnet" "default" {
 }
 
 resource "aws_eip" "default" {
-  count = "${var.nat_enabled ? local.subnets_count : 0}"
+  count = "${var.nat_enabled == "true" ? local.subnets_count : 0}"
   vpc   = true
 
   lifecycle {
@@ -41,7 +41,7 @@ resource "aws_eip" "default" {
 }
 
 resource "aws_nat_gateway" "default" {
-  count         = "${var.nat_enabled ? local.subnets_count : 0}"
+  count         = "${var.nat_enabled == "true" ? local.subnets_count : 0}"
   allocation_id = "${element(aws_eip.default.*.id, count.index)}"
   subnet_id     = "${element(aws_subnet.default.*.id, count.index)}"
 
