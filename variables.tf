@@ -69,7 +69,7 @@ variable "network_acl_id" {
   default     = ""
 }
 
-variable "egress" {
+variable "network_acl_egress" {
   description = " Specifies an egress rules"
   type        = "list"
 
@@ -85,7 +85,7 @@ variable "egress" {
   ]
 }
 
-variable "ingress" {
+variable "network_acl_ingress" {
   description = "Specifies an ingress rule"
   type        = "list"
 

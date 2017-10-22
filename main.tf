@@ -25,7 +25,7 @@ resource "aws_subnet" "default" {
   cidr_block        = "${cidrsubnet(length(var.base_cidr) > 0 ? var.base_cidr : data.aws_vpc.default.cidr_block, ceil(log(local.subnets_count * 2, 2)), count.index)}"
 
   tags = {
-    "Name"      = "${module.subnets_label.id}${var.delimiter}${element(var.names, count.index)}${var.delimiter}${element(var.availability_zones, count.index)}"
+    "Name"      = "${module.subnets_label.namespace}-${module.subnets_label.stage}-${format("%v-%v", element(var.names, count.index, element(var.availability_zones, count.index))}"
     "Stage"     = "${module.subnets_label.stage}"
     "Namespace" = "${module.subnets_label.namespace}"
   }
@@ -81,7 +81,7 @@ resource "aws_network_acl" "default" {
   count      = "${signum(length(var.network_acl_id)) == 0 ? 1 : 0}"
   vpc_id     = "${data.aws_vpc.default.id}"
   subnet_ids = ["${aws_subnet.default.*.id}"]
-  egress     = "${var.egress}"
-  ingress    = "${var.ingress}"
+  egress     = "${var.network_acl_egress}"
+  ingress    = "${var.network_acl_ingress}"
   tags       = "${module.subnets_label.tags}"
 }
