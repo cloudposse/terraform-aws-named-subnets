@@ -1,6 +1,6 @@
 # terraform-aws-named-subnets
 
-Terraform module for named `subnets` provisioning.
+Terraform module for `named subnets` provisioning.
 
 
 ## Usage
