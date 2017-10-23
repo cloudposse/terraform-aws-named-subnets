@@ -8,7 +8,7 @@ Terraform module for named `subnets` provisioning.
 ```terraform
 module "private_subnets" {
   source             = "git::https://github.com/cloudposse/terraform-aws-named-subnets.git?ref=master"
-  name               = "{var.name}"
+  name               = "${var.name}"
   namespace          = "${var.namespace}"
   stage              = "${var.stage}"
   names              = ["charlie", "echo", "bravo"]
@@ -20,7 +20,7 @@ module "private_subnets" {
 
 module "public_subnets" {
   source             = "git::https://github.com/cloudposse/terraform-aws-named-subnets.git?ref=master"
-  name               = "{var.name}"
+  name               = "${var.name}"
   namespace          = "${var.namespace}"
   stage              = "${var.stage}"
   names              = ["apples", "oranges", "grapes"]
