@@ -33,32 +33,38 @@ module "public_subnets" {
 
 # Inputs
 
-| Name                  | Default | Description                                                                                                         | Required |
-|:----------------------|:-------:|:--------------------------------------------------------------------------------------------------------------------|:--------:|
-| `namespace`           |   ``    | Namespace (e.g. `cp` or `cloudposse`)                                                                               |   Yes    |
-| `stage`               |   ``    | Stage (e.g. `prod`, `dev`, `staging`)                                                                               |   Yes    |
-| `name`                |   ``    | Name  (e.g. `bastion` or `db`)                                                                                      |   Yes    |
-| `attributes`          |  `[]`   | Additional attributes (e.g. `policy` or `role`)                                                                     |    No    |
-| `tags`                |  `{}`   | Additional tags  (e.g. `map("BusinessUnit","XYZ")`                                                                  |    No    |
-| `names`               |   ``    | List of subnets names (e.g. `["apples", "oranges", "grapes"]`)                                                      |   Yes    |
-| `vpc_id`              |   ``    | The VPC ID where subnets will be created (e.g. `vpc-aceb2723`). If empty, a new VPC will be created                 |   Yes    |
-| `base_cidr`           |   ``    | The base CIDR block which will be divided into subnet CIDR blocks (e.g. `10.0.0.0/16`)                              |    No    |
-| `igw_id`              |   ``    | The Internet Gateway ID public route table will point to (e.g. `igw-9c26a123`). Conflicts with `nat_enabled = true` |    No    |
-| `nat_enabled`         | `false` | Flag to enable/disable NAT gateways. Conflicts with non-empty `igw_id`                                              |    No    |
-| `availability_zones`  |   ``    | The  list of Availability Zones where subnets will be created (e.g. `["us-east-1a", "us-east-1b"]`).                |   Yes    |
-| `network_acl_id`      |   ``    | Network ACL ID that will be added to the subnets.  If empty, a new ACL will be created                              |    No    |
-| `additional_routes`   |  `{}`   | Map of Additional routes for subnets (e.g. `{"10.0.0.2/24" = igw-0038f979}`)                                        |    No    |
-| `network_acl_egress`  |  `[]`   | List of Network ACL CIDRs permitted egress                                                                          |    No    |
-| `network_acl_ingress` |  `[]`   | List of Network ACL CIDRs permitted ingress                                                                         |    No    |
+| Name                          | Default | Description                                                                                                                             | Required |
+|:------------------------------|:-------:|:----------------------------------------------------------------------------------------------------------------------------------------|:--------:|
+| `namespace`                   |   ``    | Namespace (e.g. `cp` or `cloudposse`)                                                                                                   |   Yes    |
+| `stage`                       |   ``    | Stage (e.g. `prod`, `dev`, `staging`)                                                                                                   |   Yes    |
+| `name`                        |   ``    | Name  (e.g. `bastion` or `db`)                                                                                                          |   Yes    |
+| `delimiter`                   |   ``    | Delimiter to be used between `name`, `namespace`, `stage`, etc.                                                                         |    No    |
+| `attributes`                  |  `[]`   | Additional attributes (e.g. `policy` or `role`)                                                                                         |    No    |
+| `tags`                        |  `{}`   | Additional tags  (e.g. `map("BusinessUnit","XYZ")`                                                                                      |    No    |
+| `vpc_id`                      |   ``    | The VPC ID where subnets will be created (e.g. `vpc-aceb2723`). If empty, a new VPC will be created                                     |   Yes    |
+| `igw_id`                      |   ``    | The Internet Gateway ID public route table will point to (e.g. `igw-9c26a123`). Conflicts with `nat_enabled = true`                     |    No    |
+| `cidr_block`                  |   ``    | The base CIDR block which will be divided into subnet CIDR blocks (e.g. `10.0.0.0/16`)                                                  |   Yes    |
+| `public_names`                |   ``    | List of names for public subnets (e.g. "charlie", "echo", "bravo")                                                                      |   Yes    |
+| `private_names`               |   ``    | List of names for private subnets (e.g. "apple", "orange", "grapes")                                                                    |   Yes    |
+| `public_availability_zone`    |   ``    | An availability zone, where public subnets will be created (e.g. "us-east-1a")                                                          |   Yes    |
+| `private_availability_zone`   |   ``    | An availability zone, where private subnets will be created (e.g. "us-east-1a")                                                         |   Yes    |
+| `public_network_acl_id`       |   ``    | Network ACL ID that will be used with public subnets.  If empty (or not specified), a new ACL will be created                           |    No    |
+| `private_network_acl_id`      |   ``    | Network ACL ID that will be used with private subnets.  If empty (or not specified), a new ACL will be created                          |    No    |
+| `vpc_default_route_table_id`  |   ``    | The default route table for public subnets. Provides access to the Internet. If not set here, will be created. (e.g. `rtb-f4f0ce12`)    |    No    |
+
 
 ## Outputs
 
-| Name            | Description                                  |
-|:----------------|:---------------------------------------------|
-| ngw_ids         | IDs of NAT Gateways                          |
-| ngw_private_ips | The private IP addresses of the NAT Gateways |
-| ngw_public_ips  | The public IP addresses of the NAT Gateways  |
-| subnet_ids      | IDs of subnets                               |
+| Name                      | Description                                           |
+|:--------------------------|:------------------------------------------------------|
+| ngw_ids                   | IDs of NAT Gateways                                   |
+| ngw_private_ips           | The private IP addresses of the NAT Gateways          |
+| ngw_public_ips            | The public IP addresses of the NAT Gateways           |
+| subnet_ids                | IDs of subnets                                        |
+| public_subnet_ids         | IDs of public subnets                                 |
+| private_subnet_ids        | IDs of private subnets                                |
+| public_route_table_ids    | IDs of route tables, associated with public subnets   |
+| private_route_table_ids   | IDs of route tables, associated with private subnets  |
 
 ## License
 
