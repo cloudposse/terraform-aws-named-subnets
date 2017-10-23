@@ -6,28 +6,17 @@ Terraform module for named `subnets` provisioning.
 ## Usage
 
 ```terraform
-module "private_subnets" {
-  source             = "git::https://github.com/cloudposse/terraform-aws-named-subnets.git?ref=master"
-  name               = "${var.name}"
-  namespace          = "${var.namespace}"
-  stage              = "${var.stage}"
-  names              = ["charlie", "echo", "bravo"]
-  vpc_id             = "vpc-1234"
-  base_cidr          = "10.0.1.0/24"
-  availability_zones = ["us-east-1a", "us-east-1b"]
-  nat_enabled        = "true"
-}
-
-module "public_subnets" {
-  source             = "git::https://github.com/cloudposse/terraform-aws-named-subnets.git?ref=master"
-  name               = "${var.name}"
-  namespace          = "${var.namespace}"
-  stage              = "${var.stage}"
-  names              = ["apples", "oranges", "grapes"]
-  vpc_id             = "vpc-1234"
-  base_cidr          = "10.0.2.0/24"
-  igw_id             = "ig-1234"
-  availability_zones = ["us-east-1a", "us-east-1b"]
+module "named_subnets" {
+  source                    = "git::https://github.com/cloudposse/terraform-aws-named-subnets.git?ref=master"
+  namespace                 = "${var.namespace}"
+  stage                     = "${var.stage}"
+  public_names              = ["${var.public_names}"]
+  private_names             = ["${var.private_names}"]
+  public_availability_zone  = "${var.public_availability_zone}"
+  private_availability_zone = "${var.private_availability_zone}"
+  vpc_id                    = "${var.vpc_id}"
+  cidr_block                = "${var.cidr_block}"
+  igw_id                    = "${var.igw_id}"
 }
 ```
 
@@ -37,7 +26,6 @@ module "public_subnets" {
 |:------------------------------|:-------:|:----------------------------------------------------------------------------------------------------------------------------------------|:--------:|
 | `namespace`                   |   ``    | Namespace (e.g. `cp` or `cloudposse`)                                                                                                   |   Yes    |
 | `stage`                       |   ``    | Stage (e.g. `prod`, `dev`, `staging`)                                                                                                   |   Yes    |
-| `name`                        |   ``    | Name  (e.g. `bastion` or `db`)                                                                                                          |   Yes    |
 | `delimiter`                   |   ``    | Delimiter to be used between `name`, `namespace`, `stage`, etc.                                                                         |    No    |
 | `attributes`                  |  `[]`   | Additional attributes (e.g. `policy` or `role`)                                                                                         |    No    |
 | `tags`                        |  `{}`   | Additional tags  (e.g. `map("BusinessUnit","XYZ")`                                                                                      |    No    |

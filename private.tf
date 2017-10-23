@@ -1,8 +1,8 @@
 module "private_subnet_label" {
-  source     = "git::https://github.com/cloudposse/tf_label.git?ref=tags/0.2.0"
-  namespace  = "${var.namespace}"
-  stage      = "${var.stage}"
-  name       = "private"
+  source    = "git::https://github.com/cloudposse/tf_label.git?ref=tags/0.2.0"
+  namespace = "${var.namespace}"
+  stage     = "${var.stage}"
+  name      = "private"
 }
 
 resource "aws_subnet" "private" {
@@ -10,10 +10,11 @@ resource "aws_subnet" "private" {
   vpc_id            = "${data.aws_vpc.default.id}"
   availability_zone = "${var.private_availability_zone}"
   cidr_block        = "${cidrsubnet(private_cidr_block, ceil(log(length(var.private_names), 2)), count.index)}"
-  tags              = {
-    "Name"          = "${module.private_subnet_label.namespace}${var.delimiter}${module.private_subnet_label.stage}${var.delimiter}${element(var.private_names, count.index)}"
-    "Stage"         = "${module.private_subnet_label.stage}"
-    "Namespace"     = "${module.private_subnet_label.namespace}"
+
+  tags = {
+    "Name"      = "${module.private_subnet_label.namespace}${var.delimiter}${module.private_subnet_label.stage}${var.delimiter}${element(var.private_names, count.index)}"
+    "Stage"     = "${module.private_subnet_label.stage}"
+    "Namespace" = "${module.private_subnet_label.namespace}"
   }
 }
 

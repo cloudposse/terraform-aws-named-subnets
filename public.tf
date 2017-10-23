@@ -1,9 +1,9 @@
 module "public_subnet_label" {
-  source     = "git::https://github.com/cloudposse/tf_label.git?ref=tags/0.2.0"
-  namespace  = "${var.namespace}"
-  stage      = "${var.stage}"
-  name       = "public"
-  tags       = "${var.tags}"
+  source    = "git::https://github.com/cloudposse/tf_label.git?ref=tags/0.2.0"
+  namespace = "${var.namespace}"
+  stage     = "${var.stage}"
+  name      = "public"
+  tags      = "${var.tags}"
 }
 
 resource "aws_subnet" "public" {
@@ -11,10 +11,11 @@ resource "aws_subnet" "public" {
   vpc_id            = "${data.aws_vpc.default.id}"
   availability_zone = "${var.public_availability_zone}"
   cidr_block        = "${cidrsubnet(local.public_cidr_block, ceil(log(length(var.public_names), 2)), count.index)}"
-  tags              = {
-    "Name"          = "${module.public_subnet_label.namespace}${var.delimiter}${module.public_subnet_label.stage}${var.delimiter}${element(var.public_names, count.index)}"
-    "Stage"         = "${module.public_subnet_label.stage}"
-    "Namespace"     = "${module.public_subnet_label.namespace}"
+
+  tags = {
+    "Name"      = "${module.public_subnet_label.namespace}${var.delimiter}${module.public_subnet_label.stage}${var.delimiter}${element(var.public_names, count.index)}"
+    "Stage"     = "${module.public_subnet_label.stage}"
+    "Namespace" = "${module.public_subnet_label.namespace}"
   }
 }
 
@@ -66,7 +67,7 @@ resource "aws_network_acl" "public" {
 }
 
 resource "aws_eip" "default" {
-  vpc   = true
+  vpc = true
 
   lifecycle {
     create_before_destroy = true

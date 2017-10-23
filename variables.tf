@@ -8,11 +8,6 @@ variable "stage" {
   type        = "string"
 }
 
-variable "name" {
-  description = "Name  (e.g. `bastion` or `db`)"
-  type        = "string"
-}
-
 variable "delimiter" {
   type        = "string"
   default     = "-"
@@ -43,12 +38,12 @@ variable "igw_id" {
 variable "cidr_block" {}
 
 variable "public_names" {
-  type = "list"
+  type    = "list"
   default = []
 }
 
 variable "private_names" {
-  type = "list"
+  type    = "list"
   default = []
 }
 
@@ -56,11 +51,14 @@ variable "public_availability_zone" {}
 
 variable "private_availability_zone" {}
 
-variable "public_network_acl_id" {}
+variable "public_network_acl_id" {
+  default = ""
+}
 
-variable "private_network_acl_id" {}
+variable "private_network_acl_id" {
+  default = ""
+}
 
-variable "vpc_default_route_table_id" {}
-
-
-
+variable "vpc_default_route_table_id" {
+  default = ""
+}
