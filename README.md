@@ -32,8 +32,8 @@ module "named_subnets" {
 | `vpc_id`                      |   ``    | The VPC ID where subnets will be created (e.g. `vpc-aceb2723`). If empty, a new VPC will be created                                     |   Yes    |
 | `igw_id`                      |   ``    | The Internet Gateway ID public route table will point to (e.g. `igw-9c26a123`). Conflicts with `nat_enabled = true`                     |    No    |
 | `cidr_block`                  |   ``    | The base CIDR block which will be divided into subnet CIDR blocks (e.g. `10.0.0.0/16`)                                                  |   Yes    |
-| `public_names`                |   ``    | List of names for public subnets (e.g. "charlie", "echo", "bravo")                                                                      |   Yes    |
-| `private_names`               |   ``    | List of names for private subnets (e.g. "apple", "orange", "grapes")                                                                    |   Yes    |
+| `public_names`                |  `[]`   | List of names for public subnets (e.g. "charlie", "echo", "bravo")                                                                      |   Yes    |
+| `private_names`               |  `[]`   | List of names for private subnets (e.g. "apple", "orange", "grapes")                                                                    |   Yes    |
 | `public_availability_zone`    |   ``    | An availability zone, where public subnets will be created (e.g. "us-east-1a")                                                          |   Yes    |
 | `private_availability_zone`   |   ``    | An availability zone, where private subnets will be created (e.g. "us-east-1a")                                                         |   Yes    |
 | `public_network_acl_id`       |   ``    | Network ACL ID that will be used with public subnets.  If empty (or not specified), a new ACL will be created                           |    No    |
