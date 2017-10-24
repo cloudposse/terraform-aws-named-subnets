@@ -5,9 +5,5 @@ data "aws_vpc" "default" {
 }
 
 locals {
-  subnets_count = "${length(compact(var.names)) * length(compact(var.availability_zones))}"
-}
-
-data "aws_subnet_ids" "default" {
-  vpc_id = "${var.vpc_id}"
+  subnets_count = "${length(compact(concat(var.public_subnets_names, var.private_subnets_names))) * length(compact(var.availability_zones))}"
 }

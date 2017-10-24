@@ -36,9 +36,16 @@ variable "availability_zones" {
   type        = "list"
 }
 
-variable "names" {
+variable "public_subnets_names" {
   type        = "list"
   description = "list of subnets names"
+  default     = []
+}
+
+variable "private_subnets_names" {
+  type        = "list"
+  description = "list of subnets names"
+  default     = []
 }
 
 variable "vpc_id" {
