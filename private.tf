@@ -8,6 +8,11 @@ module "private_label" {
   tags       = "${var.tags}"
 }
 
+locals {
+  private_route_table_id = "${coalescelist(aws_route_table.private.*.id, list("workaround"))}"
+  private_subnet_ids     = "${coalescelist(aws_subnet.private.*.id, list("workaround"))}"
+}
+
 resource "aws_subnet" "private" {
   count             = "${length(var.private_subnets_names) > 0 ? local.subnets_count : 0}"
   vpc_id            = "${var.vpc_id}"
@@ -18,7 +23,6 @@ resource "aws_subnet" "private" {
     "Name"      = "${module.private_label.id}${var.delimiter}${format("%v-%v", element(coalescelist(var.private_subnets_names, list("workaround")), count.index), element(var.availability_zones, count.index))}"
     "Stage"     = "${module.private_label.stage}"
     "Namespace" = "${module.private_label.namespace}"
-    "AZ"        = "${element(var.availability_zones, count.index)}"
   }
 }
 
@@ -30,28 +34,28 @@ resource "aws_route_table" "private" {
 
 resource "aws_route" "private" {
   count                  = "${length(var.private_subnets_names) > 0 ? local.subnets_count : 0}"
-  route_table_id         = "${element(coalescelist(aws_subnet.private.*.id, list("workaround")), count.index)}"
+  route_table_id         = "${element(local.private_route_table_id, count.index)}"
   nat_gateway_id         = "${element(var.ngw_ids, count.index)}"
   destination_cidr_block = "0.0.0.0/0"
 }
 
 resource "aws_route" "private_additional" {
   count                  = "${length(compact(values(var.additional_private_routes))) > 0 ? local.subnets_count : 0}"
-  route_table_id         = "${element(coalescelist(aws_route_table.private.*.id, list("workaround")), count.index)}"
+  route_table_id         = "${element(local.private_route_table_id, count.index)}"
   destination_cidr_block = "${element(coalescelist(keys(var.additional_private_routes), list("workaround")), count.index)}"
   nat_gateway_id         = "${lookup(var.additional_private_routes, element(coalescelist(keys(var.additional_private_routes), list("workaround")), count.index), "workaround")}"
 }
 
 resource "aws_route_table_association" "private" {
   count          = "${length(var.private_subnets_names) > 0 ? local.subnets_count : 0}"
-  subnet_id      = "${element(coalescelist(aws_subnet.private.*.id, list("workaround")), count.index)}"
-  route_table_id = "${element(coalescelist(aws_route_table.private.*.id, list("workaround")), count.index)}"
+  subnet_id      = "${element(local.private_subnet_ids, count.index)}"
+  route_table_id = "${element(local.private_route_table_id, count.index)}"
 }
 
 resource "aws_network_acl" "private" {
   count      = "${signum(length(var.private_network_acl_id)) == 0  && length(var.private_subnets_names) > 0  ? 1 : 0}"
   vpc_id     = "${data.aws_vpc.default.id}"
-  subnet_ids = ["${coalescelist(aws_subnet.private.*.id, list("workaround"))}"]
+  subnet_ids = ["${local.private_subnet_ids}"]
   egress     = "${var.private_network_acl_egress}"
   ingress    = "${var.private_network_acl_ingress}"
   tags       = "${module.private_label.tags}"
