@@ -37,7 +37,7 @@ resource "aws_route" "private" {
 
 resource "aws_route" "private_additional" {
   count                  = "${length(compact(values(var.additional_private_routes))) > 0 ? local.subnets_count : 0}"
-  route_table_id         = "${element(coalescelist(aws_subnet.private.*.id, list("workaround")), count.index)}"
+  route_table_id         = "${element(coalescelist(aws_route_table.private.*.id, list("workaround")), count.index)}"
   destination_cidr_block = "${element(coalescelist(keys(var.additional_private_routes), list("workaround")), count.index)}"
   nat_gateway_id         = "${lookup(var.additional_private_routes, element(coalescelist(keys(var.additional_private_routes), list("workaround")), count.index), "workaround")}"
 }
@@ -45,7 +45,7 @@ resource "aws_route" "private_additional" {
 resource "aws_route_table_association" "private" {
   count          = "${length(var.private_subnets_names) > 0 ? local.subnets_count : 0}"
   subnet_id      = "${element(coalescelist(aws_subnet.private.*.id, list("workaround")), count.index)}"
-  route_table_id = "${element(coalescelist(aws_subnet.private.*.id, list("workaround")), count.index)}"
+  route_table_id = "${element(coalescelist(aws_route_table.private.*.id, list("workaround")), count.index)}"
 }
 
 resource "aws_network_acl" "private" {

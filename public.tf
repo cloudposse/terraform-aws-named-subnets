@@ -30,14 +30,14 @@ resource "aws_route_table" "public" {
 
 resource "aws_route" "public" {
   count                  = "${length(var.public_subnets_names) > 0 ? local.subnets_count : 0}"
-  route_table_id         = "${element(coalescelist(aws_subnet.public.*.id, list("workaround")), count.index)}"
+  route_table_id         = "${element(coalescelist(aws_route_table.public.*.id, list("workaround")), count.index)}"
   gateway_id             = "${var.igw_id}"
   destination_cidr_block = "0.0.0.0/0"
 }
 
 resource "aws_route" "public_additional" {
   count                  = "${length(compact(values(var.additional_public_routes))) > 0 ? local.subnets_count : 0}"
-  route_table_id         = "${element(coalescelist(aws_subnet.public.*.id, list("workaround")), count.index)}"
+  route_table_id         = "${element(coalescelist(aws_route_table.public.*.id, list("workaround")), count.index)}"
   destination_cidr_block = "${element(coalescelist(keys(var.additional_public_routes), list("workaround")), count.index)}"
   gateway_id             = "${lookup(var.additional_public_routes, element(coalescelist(keys(var.additional_public_routes), list("workaround")), count.index), "workaround")}"
 }
@@ -45,7 +45,7 @@ resource "aws_route" "public_additional" {
 resource "aws_route_table_association" "public" {
   count          = "${length(var.public_subnets_names) > 0 ? local.subnets_count : 0}"
   subnet_id      = "${element(coalescelist(aws_subnet.public.*.id, list("workaround")), count.index)}"
-  route_table_id = "${element(coalescelist(aws_subnet.public.*.id, list("workaround")), count.index)}"
+  route_table_id = "${element(coalescelist(aws_route_table.public.*.id, list("workaround")), count.index)}"
 }
 
 resource "aws_network_acl" "public" {
