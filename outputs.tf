@@ -13,7 +13,12 @@ output "ngw_public_ips" {
   description = "The public IP addresses of the NAT Gateways"
 }
 
-output "subnet_ids" {
-  value       = ["${aws_subnet.default.*.id}"]
-  description = "IDs of subnets"
+output "private_subnet_ids" {
+  value       = ["${aws_subnet.private.*.id}"]
+  description = "IDs of private subnets"
+}
+
+output "public_subnet_ids" {
+  value       = ["${aws_subnet.public.*.id}"]
+  description = "IDs of public subnets"
 }

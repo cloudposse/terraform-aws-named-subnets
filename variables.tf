@@ -55,21 +55,36 @@ variable "igw_id" {
   default     = ""
 }
 
+variable "ngw_ids" {
+  description = "ID of NGWs"
+  default     = []
+}
+
 variable "nat_enabled" {
   default = "false"
 }
 
-variable "additional_routes" {
+variable "additional_public_routes" {
   type    = "map"
   default = {}
 }
 
-variable "network_acl_id" {
+variable "additional_private_routes" {
+  type    = "map"
+  default = {}
+}
+
+variable "public_network_acl_id" {
   description = "Network ACL ID that will be added to the subnets. If empty, a new ACL will be created "
   default     = ""
 }
 
-variable "network_acl_egress" {
+variable "private_network_acl_id" {
+  description = "Network ACL ID that will be added to the subnets. If empty, a new ACL will be created "
+  default     = ""
+}
+
+variable "public_network_acl_egress" {
   description = " Specifies an egress rules"
   type        = "list"
 
@@ -85,7 +100,39 @@ variable "network_acl_egress" {
   ]
 }
 
-variable "network_acl_ingress" {
+variable "public_network_acl_ingress" {
+  description = "Specifies an ingress rule"
+  type        = "list"
+
+  default = [
+    {
+      rule_no    = 100
+      action     = "allow"
+      cidr_block = "0.0.0.0/0"
+      from_port  = 0
+      to_port    = 0
+      protocol   = "-1"
+    },
+  ]
+}
+
+variable "private_network_acl_egress" {
+  description = " Specifies an egress rules"
+  type        = "list"
+
+  default = [
+    {
+      rule_no    = 100
+      action     = "allow"
+      cidr_block = "0.0.0.0/0"
+      from_port  = 0
+      to_port    = 0
+      protocol   = "-1"
+    },
+  ]
+}
+
+variable "private_network_acl_ingress" {
   description = "Specifies an ingress rule"
   type        = "list"
 
