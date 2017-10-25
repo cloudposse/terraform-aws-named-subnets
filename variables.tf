@@ -30,18 +30,6 @@ variable "availability_zone" {
   description = "Availability Zone"
 }
 
-variable "public_subnets_names" {
-  type        = "list"
-  description = "list of subnets names"
-  default     = []
-}
-
-variable "private_subnets_names" {
-  type        = "list"
-  description = "list of subnets names"
-  default     = []
-}
-
 variable "vpc_id" {
   description = "ID of VPC"
 }
@@ -52,26 +40,12 @@ variable "cidr_block" {
 
 variable "igw_id" {
   description = "ID of IGW"
-  default     = ""
+  default     = "false"
 }
 
 variable "ngw_id" {
   description = "ID of NGWs"
-  default     = ""
-}
-
-variable "nat_enabled" {
-  default = "false"
-}
-
-variable "additional_public_routes" {
-  type    = "map"
-  default = {}
-}
-
-variable "additional_private_routes" {
-  type    = "map"
-  default = {}
+  default     = "false"
 }
 
 variable "public_network_acl_id" {
@@ -150,4 +124,8 @@ variable "private_network_acl_ingress" {
 
 variable "names" {
   type = "list"
+}
+
+variable "type" {
+  default = "private"
 }
