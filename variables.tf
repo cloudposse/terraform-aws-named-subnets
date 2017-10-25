@@ -23,7 +23,17 @@ variable "attributes" {
 variable "tags" {
   type        = "map"
   default     = {}
-  description = "Additional tags (e.g. `map('BusinessUnit`,`XYZ`)"
+  description = "Additional tags (e.g. map(`BusinessUnit`,`XYZ`)"
+}
+
+variable "names" {
+  type        = "list"
+  description = "List of subnets names (e.g. `['apples', 'oranges', 'grapes']`)"
+}
+
+variable "type" {
+  default     = "private"
+  description = "The type of subnets (e.g. `private`, or `public`)"
 }
 
 variable "availability_zone" {
@@ -39,13 +49,13 @@ variable "cidr_block" {
 }
 
 variable "igw_id" {
-  description = "ID of IGW"
-  default     = "false"
+  description = "The Internet Gateway ID which will be used as a default route in public route tables (e.g. `igw-9c26a123`). Conflicts with `ngw_id`"
+  default     = ""
 }
 
 variable "ngw_id" {
-  description = "ID of NGWs"
-  default     = "false"
+  description = "The NAT Gateway ID which will be used as a default route in private route tables (e.g. `igw-9c26a123`). Conflicts with `igw_id`"
+  default     = ""
 }
 
 variable "public_network_acl_id" {
@@ -120,12 +130,4 @@ variable "private_network_acl_ingress" {
       protocol   = "-1"
     },
   ]
-}
-
-variable "names" {
-  type = "list"
-}
-
-variable "type" {
-  default = "private"
 }

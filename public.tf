@@ -55,7 +55,7 @@ resource "aws_network_acl" "public" {
 }
 
 resource "aws_eip" "default" {
-  count          = "${var.type == "public" ? 1 : 0}"
+  count = "${var.type == "public" ? 1 : 0}"
   vpc   = true
 
   lifecycle {
@@ -64,7 +64,7 @@ resource "aws_eip" "default" {
 }
 
 resource "aws_nat_gateway" "default" {
-  count          = "${var.type == "public" ? 1 : 0}"
+  count         = "${var.type == "public" ? 1 : 0}"
   allocation_id = "${join("", aws_eip.default.*.id)}"
   subnet_id     = "${element(aws_subnet.public.*.id, 0)}"
 
