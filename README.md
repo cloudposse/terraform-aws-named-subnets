@@ -5,29 +5,77 @@ Terraform module for named `subnets` provisioning.
 
 ## Usage
 
+Simple example:
+
+Full example:
+
 ```terraform
-module "private_subnets" {
-  source             = "git::https://github.com/cloudposse/terraform-aws-named-subnets.git?ref=master"
-  name               = "${var.name}"
-  namespace          = "${var.namespace}"
-  stage              = "${var.stage}"
-  names              = ["charlie", "echo", "bravo"]
-  vpc_id             = "vpc-1234"
-  base_cidr          = "10.0.1.0/24"
-  availability_zones = ["us-east-1a", "us-east-1b"]
-  nat_enabled        = "true"
+module "vpc" {
+  source = "git::https://github.com/cloudposse/terraform-aws-vpc.git?ref=remove_subnets"
+  namespace          = "cp"
+  name               = "vpc1"
+  stage              = "test"
+  cidr_block         = "${var.cidr_block}"
 }
 
-module "public_subnets" {
+locals {
+  us_east_1a_public_cidr_block  = "${cidrsubnet(module.vpc.cidr_block, 2, 0)}"
+  us_east_1a_private_cidr_block = "${cidrsubnet(module.vpc.cidr_block, 2, 1)}"
+  us_east_1b_public_cidr_block  = "${cidrsubnet(module.vpc.cidr_block, 2, 2)}"
+  us_east_1b_private_cidr_block = "${cidrsubnet(module.vpc.cidr_block, 2, 3)}"
+
+}
+
+module "us_east_1a_public_subnet" {
   source             = "git::https://github.com/cloudposse/terraform-aws-named-subnets.git?ref=master"
-  name               = "${var.name}"
+  name               = "public"
+  attributes         = ["us-east-1a"]
   namespace          = "${var.namespace}"
   stage              = "${var.stage}"
   names              = ["apples", "oranges", "grapes"]
-  vpc_id             = "vpc-1234"
-  base_cidr          = "10.0.2.0/24"
-  igw_id             = "ig-1234"
-  availability_zones = ["us-east-1a", "us-east-1b"]
+  vpc_id             = "${module.vpc.vpc_id}"
+  base_cidr          = "${local.us_east_1a_public_cidr_block}"
+  igw_id             = "${module.vpc.igw_id}"
+  availability_zone  = "us-east-1a"
+}
+
+module "us_east_1a_private_subnet" {
+  source             = "git::https://github.com/cloudposse/terraform-aws-named-subnets.git?ref=master"
+  name               = "private"
+  attributes         = ["us-east-1a"]
+  namespace          = "${var.namespace}"
+  stage              = "${var.stage}"
+  names              = ["charlie", "echo", "bravo"]
+  vpc_id             = "${module.vpc.vpc_id}"
+  cidr_block         = "${local.us_east_1a_private_cidr_block}"
+  availability_zone  = "us-east-1a"
+  ngw_id             = "${module.us_east_1a_public_subnet.ngw_id}"
+}
+
+module "us_east_1b_public_subnets" {
+  source             = "git::https://github.com/cloudposse/terraform-aws-named-subnets.git?ref=master"
+  name               = "public"
+  attributes         = ["us-east-1b"]
+  namespace          = "${var.namespace}"
+  stage              = "${var.stage}"
+  names              = ["apples", "oranges", "grapes"]
+  vpc_id             = "${module.vpc.vpc_id}"
+  base_cidr          = "${local.us_east_1b_public_cidr_block}"
+  igw_id             = "${module.vpc.igw_id}"
+  availability_zone  = "us-east-1b"
+}
+
+module "us_east_1b_private_subnets" {
+  source             = "git::https://github.com/cloudposse/terraform-aws-named-subnets.git?ref=master"
+  name               = "private"
+  attributes         = ["us-east-1b"]
+  namespace          = "${var.namespace}"
+  stage              = "${var.stage}"
+  names              = ["charlie", "echo", "bravo"]
+  vpc_id             = "${module.vpc.vpc_id}"
+  cidr_block         = "${local.us_east_1b_private_cidr_block}"
+  availability_zone  = "us-east-1b"
+  ngw_id             = "${module.us_east_1b_public_subnets.ngw_id}"
 }
 ```
 

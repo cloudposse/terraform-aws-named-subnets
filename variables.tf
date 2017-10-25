@@ -8,11 +8,6 @@ variable "stage" {
   type        = "string"
 }
 
-variable "name" {
-  description = "Name  (e.g. `bastion` or `db`)"
-  type        = "string"
-}
-
 variable "delimiter" {
   type        = "string"
   default     = "-"
@@ -31,9 +26,8 @@ variable "tags" {
   description = "Additional tags (e.g. `map('BusinessUnit`,`XYZ`)"
 }
 
-variable "availability_zones" {
-  description = "Availability Zones"
-  type        = "list"
+variable "availability_zone" {
+  description = "Availability Zone"
 }
 
 variable "public_subnets_names" {
@@ -52,9 +46,8 @@ variable "vpc_id" {
   description = "ID of VPC"
 }
 
-variable "base_cidr" {
+variable "cidr_block" {
   description = "The base CIDR block which will be divided into subnet CIDR blocks (e.g. `10.0.0.0/16`)"
-  default     = ""
 }
 
 variable "igw_id" {
@@ -62,9 +55,9 @@ variable "igw_id" {
   default     = ""
 }
 
-variable "ngw_ids" {
+variable "ngw_id" {
   description = "ID of NGWs"
-  default     = []
+  default     = ""
 }
 
 variable "nat_enabled" {
@@ -92,7 +85,7 @@ variable "private_network_acl_id" {
 }
 
 variable "public_network_acl_egress" {
-  description = " Specifies an egress rules"
+  description = "Egress network ACL rules"
   type        = "list"
 
   default = [
@@ -108,7 +101,7 @@ variable "public_network_acl_egress" {
 }
 
 variable "public_network_acl_ingress" {
-  description = "Specifies an ingress rule"
+  description = "Egress network ACL rules"
   type        = "list"
 
   default = [
@@ -124,7 +117,7 @@ variable "public_network_acl_ingress" {
 }
 
 variable "private_network_acl_egress" {
-  description = " Specifies an egress rules"
+  description = "Egress network ACL rules"
   type        = "list"
 
   default = [
@@ -140,7 +133,7 @@ variable "private_network_acl_egress" {
 }
 
 variable "private_network_acl_ingress" {
-  description = "Specifies an ingress rule"
+  description = "Egress network ACL rules"
   type        = "list"
 
   default = [
@@ -153,4 +146,8 @@ variable "private_network_acl_ingress" {
       protocol   = "-1"
     },
   ]
+}
+
+variable "names" {
+  type = "list"
 }
