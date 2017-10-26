@@ -31,6 +31,11 @@ variable "names" {
   description = "List of subnets names (e.g. `['apples', 'oranges', 'grapes']`)"
 }
 
+variable "max_subnets_number" {
+  default = ""
+  description = "A maximum number of subnets which can be created. This variable is being used for CIDR blocks calculation. Default to length of `names` argument"
+}
+
 variable "type" {
   default     = "private"
   description = "The type of subnets (e.g. `private`, or `public`)"

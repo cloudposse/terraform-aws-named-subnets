@@ -14,10 +14,10 @@ output "ngw_public_ip" {
 }
 
 output "subnet_ids" {
-  value       = ["${compact(concat(aws_subnet.private.*.id, aws_subnet.public.*.id))}"]
+  value       = ["${coalescelist(aws_subnet.private.*.id, aws_subnet.public.*.id)}"]
   description = "IDs of private subnets"
 }
 
 output "route_table_ids" {
-  value = ["${compact(concat(aws_route_table.public.*.id, aws_route_table.private.*.id))}"]
+  value = ["${coalescelist(aws_route_table.public.*.id, aws_route_table.private.*.id)}"]
 }
