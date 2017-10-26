@@ -12,7 +12,7 @@ resource "aws_subnet" "public" {
   count             = "${var.type == "public" ? length(var.names) : 0}"
   vpc_id            = "${var.vpc_id}"
   availability_zone = "${var.availability_zone}"
-  cidr_block        = "${cidrsubnet(var.cidr_block, ceil(log(var.max_subnets_number, 2)), count.index)}"
+  cidr_block        = "${cidrsubnet(var.cidr_block, ceil(log(var.max_subnets, 2)), count.index)}"
 
   tags = {
     "Name"      = "${module.public_label.id}${var.delimiter}${element(var.names, count.index)}"
