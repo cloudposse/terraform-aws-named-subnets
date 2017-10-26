@@ -32,7 +32,7 @@ variable "names" {
 }
 
 variable "max_subnets_number" {
-  default = ""
+  default = "16"
   description = "A maximum number of subnets which can be created. This variable is being used for CIDR blocks calculation. Default to length of `names` argument"
 }
 
