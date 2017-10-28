@@ -25,6 +25,7 @@ module "public_subnets" {
   source            = "git::https://github.com/cloudposse/terraform-aws-named-subnets.git?ref=master"
   namespace         = "${var.namespace}"
   stage             = "${var.stage}"
+  name              = "${var.name}"
   names             = ["apples", "oranges", "grapes"]
   vpc_id            = "${module.vpc.vpc_id}"
   cidr_block        = "${local.public_cidr_block}"
@@ -38,6 +39,7 @@ module "private_subnets" {
   attributes        = ["us-east-1a"]
   namespace         = "${var.namespace}"
   stage             = "${var.stage}"
+  name              = "${var.name}"
   names             = ["charlie", "echo", "bravo"]
   vpc_id            = "${module.vpc.vpc_id}"
   cidr_block        = "${local.private_cidr_block}"
@@ -69,6 +71,7 @@ module "us_east_1a_public_subnets" {
   source            = "git::https://github.com/cloudposse/terraform-aws-named-subnets.git?ref=master"
   namespace         = "${var.namespace}"
   stage             = "${var.stage}"
+  name              = "${var.name}"
   names             = ["apples", "oranges", "grapes"]
   vpc_id            = "${module.vpc.vpc_id}"
   cidr_block        = "${local.us_east_1a_public_cidr_block}"
@@ -82,6 +85,7 @@ module "us_east_1a_private_subnets" {
   attributes        = ["us-east-1a"]
   namespace         = "${var.namespace}"
   stage             = "${var.stage}"
+  name              = "${var.name}"
   names             = ["charlie", "echo", "bravo"]
   vpc_id            = "${module.vpc.vpc_id}"
   cidr_block        = "${local.us_east_1a_private_cidr_block}"
@@ -95,6 +99,7 @@ module "us_east_1b_public_subnets" {
   attributes        = ["us-east-1b"]
   namespace         = "${var.namespace}"
   stage             = "${var.stage}"
+  name              = "${var.name}"
   names             = ["apples", "oranges", "grapes"]
   vpc_id            = "${module.vpc.vpc_id}"
   cidr_block        = "${local.us_east_1b_public_cidr_block}"
@@ -108,6 +113,7 @@ module "us_east_1b_private_subnets" {
   attributes        = ["us-east-1b"]
   namespace         = "${var.namespace}"
   stage             = "${var.stage}"
+  name              = "${var.name}"
   names             = ["charlie", "echo", "bravo"]
   vpc_id            = "${module.vpc.vpc_id}"
   cidr_block        = "${local.us_east_1b_private_cidr_block}"

@@ -1,7 +1,7 @@
 module "private_label" {
   source     = "git::https://github.com/cloudposse/terraform-null-label.git?ref=tags/0.2.2"
   namespace  = "${var.namespace}"
-  name       = "${var.availability_zone}"
+  name       = "${var.name}"
   stage      = "${var.stage}"
   delimiter  = "${var.delimiter}"
   tags       = "${var.tags}"

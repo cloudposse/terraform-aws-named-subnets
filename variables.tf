@@ -8,6 +8,11 @@ variable "stage" {
   type        = "string"
 }
 
+variable "name" {
+  type        = "string"
+  description = "Application or solution name"
+}
+
 variable "delimiter" {
   type        = "string"
   default     = "-"
