@@ -2,10 +2,10 @@ module "private_label" {
   source     = "git::https://github.com/cloudposse/terraform-null-label.git?ref=tags/0.2.2"
   namespace  = "${var.namespace}"
   name       = "${var.availability_zone}"
-  attributes = ["private"]
   stage      = "${var.stage}"
   delimiter  = "${var.delimiter}"
   tags       = "${var.tags}"
+  attributes = ["${compact(concat(var.attributes, list("private")))}"]
 }
 
 resource "aws_subnet" "private" {

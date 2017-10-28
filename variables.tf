@@ -38,7 +38,7 @@ variable "max_subnets" {
 
 variable "type" {
   default     = "private"
-  description = "Type of subnets (e.g. `private`, or `public`)"
+  description = "Type of subnets (`private` or `public`)"
 }
 
 variable "availability_zone" {
