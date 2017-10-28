@@ -1,15 +1,15 @@
 # terraform-aws-named-subnets
 
-Terraform module for named `subnets` provisioning.
+Terraform module for named [`subnets`](http://docs.aws.amazon.com/AmazonVPC/latest/UserGuide/VPC_Subnets.html) provisioning.
 
 
 ## Usage
 
 Simple example:
 
-```terraform
+```hcl
 module "vpc" {
-  source     = "git::https://github.com/cloudposse/terraform-aws-vpc.git?ref=remove_subnets"
+  source     = "git::https://github.com/cloudposse/terraform-aws-vpc.git?ref=master"
   namespace  = "${var.namespace}"
   name       = "vpc"
   stage      = "${var.stage}"
@@ -49,7 +49,7 @@ module "private_subnets" {
 
 Full example:
 
-```terraform
+```hcl
 module "vpc" {
   source     = "git::https://github.com/cloudposse/terraform-aws-vpc.git?ref=remove_subnets"
   namespace  = "${var.namespace}"
@@ -123,23 +123,23 @@ module "us_east_1b_private_subnets" {
 |:------------------------------|:---------------------:|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:--------:|
 | `namespace`                   | ``                    | Namespace (e.g. `cp` or `cloudposse`)                                                                                                                                                     |   Yes    |
 | `stage`                       | ``                    | Stage (e.g. `prod`, `dev`, `staging`)                                                                                                                                                     |   Yes    |
-| `delimiter`                   | `-`                   | Delimiter to be used between `name`, `namespace`, `stage`, etc.                                                                                                                           |    No    |
+| `delimiter`                   | `-`                   | Delimiter to use between `name`, `namespace`, `stage`, `attributes`.                                                                                                                      |    No    |
 | `attributes`                  | `[]`                  | Additional attributes (e.g. `policy` or `role`)                                                                                                                                           |    No    |
 | `tags`                        | `{}`                  | Additional tags  (e.g. `map("BusinessUnit","XYZ")`                                                                                                                                        |    No    |
 | `names`                       | ``                    | List of subnets names (e.g. `["apples", "oranges", "grapes"]`)                                                                                                                            |   Yes    |
-| `max_subnets`                 | `16`                  | A maximum number of subnets which can be created. This variable is being used for CIDR blocks calculation. MUST be greater than length of `names` list.                                   |    No    |
-| `availability_zone`           | ``                    | An Availability Zone where subnets will be created (e.g. `us-east-1a`).                                                                                                                   |   Yes    |
-| `type`                        | `private`             | A type of subnets (e.g. `private`, or `public`)                                                                                                                                           |    No    |
-| `vpc_id`                      | ``                    | A VPC ID where subnets will be created (e.g. `vpc-aceb2723`). If empty, a new VPC will be created                                                                                         |   Yes    |
-| `cidr_block`                  | ``                    | A base CIDR block which will be divided into subnet CIDR blocks (e.g. `10.0.0.0/24`)                                                                                                      |    No    |
-| `igw_id`                      | ``                    | An Internet Gateway ID which will be used as a default route in public route tables (e.g. `igw-9c26a123`). Conflicts with `ngw_id`                                                        |   Yes    |
-| `ngw_id`                      | ``                    | A NAT Gateway ID which will be used as a default route in private route tables (e.g. `igw-9c26a123`). Conflicts with `igw_id`                                                             |   Yes    |
+| `max_subnets`                 | `16`                  | Maximum number of subnets which can be created. This variable is being used for CIDR blocks calculation. MUST be greater than length of `names` list.                                     |    No    |
+| `availability_zone`           | ``                    | Availability Zone where subnets will be created (e.g. `us-east-1a`).                                                                                                                      |   Yes    |
+| `type`                        | `private`             | Type of subnets (`private` or `public`)                                                                                                                                                   |    No    |
+| `vpc_id`                      | ``                    | VPC ID where subnets will be created (e.g. `vpc-aceb2723`). If empty, a new VPC will be created                                                                                           |   Yes    |
+| `cidr_block`                  | ``                    | Base CIDR block which will be divided into subnet CIDR blocks (e.g. `10.0.0.0/24`)                                                                                                        |    No    |
+| `igw_id`                      | ``                    | Internet Gateway ID which will be used as a default route in public route tables (e.g. `igw-9c26a123`). Conflicts with `ngw_id`                                                           |   Yes    |
+| `ngw_id`                      | ``                    | NAT Gateway ID which will be used as a default route in private route tables (e.g. `igw-9c26a123`). Conflicts with `igw_id`                                                               |   Yes    |
 | `public_network_acl_id`       | ``                    | ID of Network ACL which will be added to the public subnets.  If empty, a new ACL will be created                                                                                         |    No    |
 | `private_network_acl_id`      | ``                    | ID of Network ACL which will be added to the private subnets.  If empty, a new ACL will be created                                                                                        |    No    |
-| `public_network_acl_egress`   | see [variables.tf]    | An Egress ACL which will be added to the new Public Network ACL                                                                                                                           |    No    |
-| `public_network_acl_ingress`  | see [variables.tf]    | An Ingress ACL which will be added to the new Public Network ACL                                                                                                                          |    No    |
-| `private_network_acl_egress`  | see [variables.tf]    | An Egress ACL which will be added to the new Private Network ACL                                                                                                                          |    No    |
-| `private_network_acl_ingress` | see [variables.tf]    | An Ingress ACL which will be added to the new Private Network ACL                                                                                                                         |    No    |
+| `public_network_acl_egress`   | see [variables.tf](https://github.com/cloudposse/terraform-aws-named-subnets/blob/master/variables.tf)    | Egress ACL which will be added to the new Public Network ACL                                          |    No    |
+| `public_network_acl_ingress`  | see [variables.tf](https://github.com/cloudposse/terraform-aws-named-subnets/blob/master/variables.tf)    | Ingress ACL which will be added to the new Public Network ACL                                         |    No    |
+| `private_network_acl_egress`  | see [variables.tf](https://github.com/cloudposse/terraform-aws-named-subnets/blob/master/variables.tf)    | Egress ACL which will be added to the new Private Network ACL                                         |    No    |
+| `private_network_acl_ingress` | see [variables.tf](https://github.com/cloudposse/terraform-aws-named-subnets/blob/master/variables.tf)    | Ingress ACL which will be added to the new Private Network ACL                                        |    No    |
 
 
 ## Outputs
@@ -151,6 +151,7 @@ module "us_east_1b_private_subnets" {
 | ngw_public_ip   | A public IP address of a NAT Gateway         |
 | subnet_ids      | IDs of Subnets                               |
 | route_table_ids | IDs of Route Tables                          |
+
 
 ## License
 
