@@ -1,16 +1,16 @@
 output "ngw_id" {
   value       = "${join("", aws_nat_gateway.default.*.id)}"
-  description = "IDs of NAT Gateways"
+  description = "NAT Gateway ID"
 }
 
 output "ngw_private_ip" {
   value       = "${join("", aws_nat_gateway.default.*.private_ip)}"
-  description = "The private IP addresses of the NAT Gateways"
+  description = "Private IP addresse of the NAT Gateway"
 }
 
 output "ngw_public_ip" {
   value       = "${join("", aws_nat_gateway.default.*.public_ip)}"
-  description = "The public IP addresses of the NAT Gateways"
+  description = "Public IP addresse of the NAT Gateway"
 }
 
 output "subnet_ids" {

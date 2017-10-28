@@ -152,9 +152,9 @@ module "us_east_1b_private_subnets" {
 
 | Name            | Description                                  |
 |:----------------|:---------------------------------------------|
-| ngw_id          | ID of NAT Gateway                            |
-| ngw_private_ip  | A private IP address of a NAT Gateway        |
-| ngw_public_ip   | A public IP address of a NAT Gateway         |
+| ngw_id          | NAT Gateway ID                               |
+| ngw_private_ip  | Private IP address of the NAT Gateway        |
+| ngw_public_ip   | Public IP address of the NAT Gateway         |
 | subnet_ids      | IDs of Subnets                               |
 | route_table_ids | IDs of Route Tables                          |
 
