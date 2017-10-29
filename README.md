@@ -205,7 +205,7 @@ output "public_subnet_names_subnet_ids" {
 
 the output Maps of subnet names to subnet IDs will look like these
 
-```json
+```hcl
 public_subnet_names_subnet_ids = {
   web1 = subnet-ea58d78e
   web2 = subnet-556ee131
@@ -218,9 +218,7 @@ private_subnet_names_subnet_ids = {
 }
 ```
 
-and the created subnet IDs could be found by the subnet names using `map["key"]` or [`lookup(map, key, [default])`](https://www.terraform.io/docs/configuration/interpolation.html#lookup-map-key-default-)
-
-for example:
+and the created subnet IDs could be found by the subnet names using `map["key"]` or [`lookup(map, key, [default])`](https://www.terraform.io/docs/configuration/interpolation.html#lookup-map-key-default-), for example:
 
 `public_subnet_names_subnet_ids["web1"]`
 
