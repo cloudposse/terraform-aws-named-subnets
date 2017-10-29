@@ -18,6 +18,7 @@ resource "aws_subnet" "public" {
     "Name"      = "${module.public_label.id}${var.delimiter}${element(var.names, count.index)}"
     "Stage"     = "${module.public_label.stage}"
     "Namespace" = "${module.public_label.namespace}"
+    "Named"     = "${element(var.names, count.index)}"
   }
 }
 

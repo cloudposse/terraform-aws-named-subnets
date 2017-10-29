@@ -15,10 +15,14 @@ output "ngw_public_ip" {
 
 output "subnet_ids" {
   value       = ["${coalescelist(aws_subnet.private.*.id, aws_subnet.public.*.id)}"]
-  description = "Subnets IDs"
+  description = "Subnet IDs"
 }
 
 output "route_table_ids" {
   value       = ["${coalescelist(aws_route_table.public.*.id, aws_route_table.private.*.id)}"]
   description = "Route Table IDs"
+}
+
+output "subnet_names_subnet_ids" {
+  value = "${zipmap(var.names, matchkeys(coalescelist(aws_subnet.private.*.id, aws_subnet.public.*.id), coalescelist(aws_subnet.private.*.tags.Named, aws_subnet.public.*.tags.Named), var.names))}"
 }
