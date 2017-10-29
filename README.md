@@ -160,6 +160,73 @@ module "us_east_1b_private_subnets" {
 | subnet_names_subnet_ids   | Map of subnet names to subnet IDs            |
 
 
+Given the following configuration
+
+```hcl
+locals {
+  public_cidr_block  = "${cidrsubnet(var.vpc_cidr, 1, 0)}"
+  private_cidr_block = "${cidrsubnet(var.vpc_cidr, 1, 1)}"
+}
+
+module "public_subnets" {
+  source            = "git::https://github.com/cloudposse/terraform-aws-named-subnets.git?ref=master"
+  namespace         = "${var.namespace}"
+  stage             = "${var.stage}"
+  name              = "${var.name}"
+  names             = ["web1", "web2", "web3"]
+  vpc_id            = "${var.vpc_id}"
+  cidr_block        = "${local.public_cidr_block}"
+  type              = "public"
+  availability_zone = "us-east-1a"
+  igw_id            = "${var.igw_id}"
+}
+
+module "private_subnets" {
+  source            = "git::https://github.com/cloudposse/terraform-aws-named-subnets.git?ref=master"
+  namespace         = "${var.namespace}"
+  stage             = "${var.stage}"
+  name              = "${var.name}"
+  names             = ["kafka", "cassandra", "zookeeper"]
+  vpc_id            = "${var.vpc_id}"
+  cidr_block        = "${local.private_cidr_block}"
+  type              = "private"
+  availability_zone = "us-east-1a"
+  ngw_id            = "${module.public_subnets.ngw_id}"
+}
+
+output "private_subnet_names_subnet_ids" {
+  value = "${module.private_subnets.subnet_names_subnet_ids}"
+}
+
+output "public_subnet_names_subnet_ids" {
+  value = "${module.public_subnets.subnet_names_subnet_ids}"
+}
+```
+
+the output Maps of subnet names to subnet IDs will look like these
+
+```js
+public_subnet_names_subnet_ids = {
+  web1 = subnet-ea58d78e
+  web2 = subnet-556ee131
+  web3 = subnet-6f54db0b
+}
+private_subnet_names_subnet_ids = {
+  cassandra = subnet-376de253
+  kafka = subnet-9e53dcfa
+  zookeeper = subnet-a86fe0cc
+}
+```
+
+and the created subnet IDs could be found by the subnet names using `map["key"]` or [`lookup(map, key, [default])`](https://www.terraform.io/docs/configuration/interpolation.html#lookup-map-key-default-),
+
+_e.g._
+
+`public_subnet_names_subnet_ids["web1"]`
+
+`lookup(private_subnet_names_subnet_ids, "kafka")`
+
+
 ## License
 
 Apache 2 License. See [`LICENSE`](LICENSE) for full details.
