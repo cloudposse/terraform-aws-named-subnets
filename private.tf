@@ -19,6 +19,7 @@ resource "aws_subnet" "private" {
     "Stage"     = "${module.private_label.stage}"
     "Namespace" = "${module.private_label.namespace}"
     "Named"     = "${element(var.names, count.index)}"
+    "Type"      = "${var.type}"
   }
 }
 
