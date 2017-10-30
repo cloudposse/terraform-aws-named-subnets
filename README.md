@@ -5,7 +5,7 @@ Terraform module for named [`subnets`](http://docs.aws.amazon.com/AmazonVPC/late
 
 ## Usage
 
-Simple example:
+Simple example with private and public subnets in one Availability Zone:
 
 ```hcl
 module "vpc" {
@@ -26,7 +26,7 @@ module "public_subnets" {
   namespace         = "${var.namespace}"
   stage             = "${var.stage}"
   name              = "${var.name}"
-  names             = ["web1", "web2", "web3"]
+  subnet_names      = ["web1", "web2", "web3"]
   vpc_id            = "${module.vpc.vpc_id}"
   cidr_block        = "${local.public_cidr_block}"
   type              = "public"
@@ -39,7 +39,7 @@ module "private_subnets" {
   namespace         = "${var.namespace}"
   stage             = "${var.stage}"
   name              = "${var.name}"
-  names             = ["kafka", "cassandra", "zookeeper"]
+  subnet_names      = ["kafka", "cassandra", "zookeeper"]
   vpc_id            = "${module.vpc.vpc_id}"
   cidr_block        = "${local.private_cidr_block}"
   type              = "private"
@@ -71,7 +71,7 @@ module "us_east_1a_public_subnets" {
   namespace         = "${var.namespace}"
   stage             = "${var.stage}"
   name              = "${var.name}"
-  names             = ["apples", "oranges", "grapes"]
+  subnet_names      = ["apples", "oranges", "grapes"]
   vpc_id            = "${module.vpc.vpc_id}"
   cidr_block        = "${local.us_east_1a_public_cidr_block}"
   type              = "public"
@@ -85,7 +85,7 @@ module "us_east_1a_private_subnets" {
   namespace         = "${var.namespace}"
   stage             = "${var.stage}"
   name              = "${var.name}"
-  names             = ["charlie", "echo", "bravo"]
+  subnet_names      = ["charlie", "echo", "bravo"]
   vpc_id            = "${module.vpc.vpc_id}"
   cidr_block        = "${local.us_east_1a_private_cidr_block}"
   type              = "private"
@@ -99,7 +99,7 @@ module "us_east_1b_public_subnets" {
   namespace         = "${var.namespace}"
   stage             = "${var.stage}"
   name              = "${var.name}"
-  names             = ["apples", "oranges", "grapes"]
+  subnet_names      = ["apples", "oranges", "grapes"]
   vpc_id            = "${module.vpc.vpc_id}"
   cidr_block        = "${local.us_east_1b_public_cidr_block}"
   type              = "public"
@@ -113,7 +113,7 @@ module "us_east_1b_private_subnets" {
   namespace         = "${var.namespace}"
   stage             = "${var.stage}"
   name              = "${var.name}"
-  names             = ["charlie", "echo", "bravo"]
+  subnet_names      = ["charlie", "echo", "bravo"]
   vpc_id            = "${module.vpc.vpc_id}"
   cidr_block        = "${local.us_east_1b_private_cidr_block}"
   type              = "private"
@@ -129,11 +129,11 @@ module "us_east_1b_private_subnets" {
 |:------------------------------|:---------------------:|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:--------:|
 | `namespace`                   | ``                    | Namespace (_e.g._ `cp` or `cloudposse`)                                                                                                                                                   |   Yes    |
 | `stage`                       | ``                    | Stage (_e.g._ `prod`, `dev`, `staging`)                                                                                                                                                   |   Yes    |
-| `name`                        | ``                    | Application or solution name (_e.g._ `web`, `app`)                                                                                                                                        |   Yes    |
+| `name`                        | ``                    | Application or solution name (_e.g._ `myapp`)                                                                                                                                        |   Yes    |
 | `delimiter`                   | `-`                   | Delimiter to use between `name`, `namespace`, `stage`, `attributes`                                                                                                                       |    No    |
 | `attributes`                  | `[]`                  | Additional attributes (_e.g._ `policy` or `role`)                                                                                                                                         |    No    |
 | `tags`                        | `{}`                  | Additional tags  (_e.g._ `map("BusinessUnit","XYZ")`                                                                                                                                      |    No    |
-| `names`                       | ``                    | List of subnet names (_e.g._ `["kafka", "cassandra", "zookeeper"]`)                                                                                                                       |   Yes    |
+| `subnet_names`                | ``                    | List of subnet names (_e.g._ `["kafka", "cassandra", "zookeeper"]`)                                                                                                                       |   Yes    |
 | `max_subnets`                 | `16`                  | Maximum number of subnets that can be created. This variable is being used for CIDR blocks calculation. MUST be greater than length of `names` list                                       |    No    |
 | `availability_zone`           | ``                    | Availability Zone where subnets will be created (e.g. `us-east-1a`)                                                                                                                       |   Yes    |
 | `type`                        | `private`             | Type of subnets (`private` or `public`)                                                                                                                                                   |    No    |
@@ -161,7 +161,7 @@ module "us_east_1b_private_subnets" {
 | named_subnet_ids          | Map of subnet names to subnet IDs            |
 
 
-Given the following configuration
+Given the following configuration (see the Simple example above)
 
 ```hcl
 locals {
@@ -174,7 +174,7 @@ module "public_subnets" {
   namespace         = "${var.namespace}"
   stage             = "${var.stage}"
   name              = "${var.name}"
-  names             = ["web1", "web2", "web3"]
+  subnet_names      = ["web1", "web2", "web3"]
   vpc_id            = "${var.vpc_id}"
   cidr_block        = "${local.public_cidr_block}"
   type              = "public"
@@ -187,7 +187,7 @@ module "private_subnets" {
   namespace         = "${var.namespace}"
   stage             = "${var.stage}"
   name              = "${var.name}"
-  names             = ["kafka", "cassandra", "zookeeper"]
+  subnet_names      = ["kafka", "cassandra", "zookeeper"]
   vpc_id            = "${var.vpc_id}"
   cidr_block        = "${local.private_cidr_block}"
   type              = "private"

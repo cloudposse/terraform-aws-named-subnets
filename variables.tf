@@ -31,9 +31,9 @@ variable "tags" {
   description = "Additional tags (e.g. map(`BusinessUnit`,`XYZ`)"
 }
 
-variable "names" {
+variable "subnet_names" {
   type        = "list"
-  description = "List of subnets names (e.g. `['apples', 'oranges', 'grapes']`)"
+  description = "List of subnet names (e.g. `['apples', 'oranges', 'grapes']`)"
 }
 
 variable "max_subnets" {
@@ -51,7 +51,7 @@ variable "availability_zone" {
 }
 
 variable "vpc_id" {
-  description = "VPC Id"
+  description = "VPC ID"
 }
 
 variable "cidr_block" {
