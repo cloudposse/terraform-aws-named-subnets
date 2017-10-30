@@ -48,7 +48,7 @@ module "private_subnets" {
 }
 ```
 
-Full example:
+Full example, with private and public subnets in two Availability Zones for High Availability:
 
 ```hcl
 module "vpc" {
