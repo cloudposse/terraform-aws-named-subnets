@@ -23,6 +23,6 @@ output "route_table_ids" {
   description = "Route Table IDs"
 }
 
-output "subnet_names_subnet_ids" {
+output "named_subnet_ids" {
   value = "${zipmap(var.names, matchkeys(coalescelist(aws_subnet.private.*.id, aws_subnet.public.*.id), coalescelist(aws_subnet.private.*.tags.Named, aws_subnet.public.*.tags.Named), var.names))}"
 }
