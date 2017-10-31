@@ -8,10 +8,15 @@ variable "stage" {
   type        = "string"
 }
 
+variable "name" {
+  type        = "string"
+  description = "Application or solution name"
+}
+
 variable "delimiter" {
   type        = "string"
   default     = "-"
-  description = "Delimiter to be used between `name`, `namespace`, `stage`, etc."
+  description = "Delimiter to be used between `name`, `namespace`, `stage`, `attributes`"
 }
 
 variable "attributes" {
@@ -26,19 +31,19 @@ variable "tags" {
   description = "Additional tags (e.g. map(`BusinessUnit`,`XYZ`)"
 }
 
-variable "names" {
+variable "subnet_names" {
   type        = "list"
-  description = "List of subnets names (e.g. `['apples', 'oranges', 'grapes']`)"
+  description = "List of subnet names (e.g. `['apples', 'oranges', 'grapes']`)"
 }
 
 variable "max_subnets" {
-  default = "16"
-  description = "A maximum number of subnets which can be created. This variable is being used for CIDR blocks calculation. Default to length of `names` argument"
+  default     = "16"
+  description = "Maximum number of subnets which can be created. This variable is being used for CIDR blocks calculation. Default to length of `names` argument"
 }
 
 variable "type" {
   default     = "private"
-  description = "The type of subnets (e.g. `private`, or `public`)"
+  description = "Type of subnets (`private` or `public`)"
 }
 
 variable "availability_zone" {
@@ -46,20 +51,20 @@ variable "availability_zone" {
 }
 
 variable "vpc_id" {
-  description = "ID of VPC"
+  description = "VPC ID"
 }
 
 variable "cidr_block" {
-  description = "The base CIDR block which will be divided into subnet CIDR blocks (e.g. `10.0.0.0/16`)"
+  description = "Base CIDR block which will be divided into subnet CIDR blocks (e.g. `10.0.0.0/16`)"
 }
 
 variable "igw_id" {
-  description = "The Internet Gateway ID which will be used as a default route in public route tables (e.g. `igw-9c26a123`). Conflicts with `ngw_id`"
+  description = "Internet Gateway ID which will be used as a default route in public route tables (e.g. `igw-9c26a123`). Conflicts with `ngw_id`"
   default     = ""
 }
 
 variable "ngw_id" {
-  description = "The NAT Gateway ID which will be used as a default route in private route tables (e.g. `igw-9c26a123`). Conflicts with `igw_id`"
+  description = "NAT Gateway ID which will be used as a default route in private route tables (e.g. `igw-9c26a123`). Conflicts with `igw_id`"
   default     = ""
 }
 
