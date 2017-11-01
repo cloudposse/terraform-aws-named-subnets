@@ -1,4 +1,4 @@
-# terraform-aws-named-subnets
+# terraform-aws-named-subnets [![Build Status](https://travis-ci.org/cloudposse/terraform-aws-named-subnets.svg)](https://travis-ci.org/cloudposse/terraform-aws-named-subnets)
 
 Terraform module for named [`subnets`](http://docs.aws.amazon.com/AmazonVPC/latest/UserGuide/VPC_Subnets.html) provisioning.
 
