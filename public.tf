@@ -48,7 +48,7 @@ resource "aws_route_table_association" "public" {
 }
 
 resource "aws_network_acl" "public" {
-  count      = "${var.type == "public" && signum(length(var.private_network_acl_id)) == 0 ? 1 : 0}"
+  count      = "${var.type == "public" && signum(length(var.public_network_acl_id)) == 0 ? 1 : 0}"
   vpc_id     = "${data.aws_vpc.default.id}"
   subnet_ids = ["${aws_subnet.public.*.id}"]
   egress     = "${var.public_network_acl_egress}"
