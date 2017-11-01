@@ -147,6 +147,7 @@ module "us_east_1b_private_subnets" {
 | `public_network_acl_ingress`  | see [variables.tf](https://github.com/cloudposse/terraform-aws-named-subnets/blob/master/variables.tf)    | Ingress rules which will be added to the new Public Network ACL                                       |    No    |
 | `private_network_acl_egress`  | see [variables.tf](https://github.com/cloudposse/terraform-aws-named-subnets/blob/master/variables.tf)    | Egress rules which will be added to the new Private Network ACL                                       |    No    |
 | `private_network_acl_ingress` | see [variables.tf](https://github.com/cloudposse/terraform-aws-named-subnets/blob/master/variables.tf)    | Ingress rules which will be added to the new Private Network ACL                                      |    No    |
+| `enabled`                     | `true`                | Set to `false` to prevent the module from creating any resources                                                                                                                          |    No    |
 
 
 ## Outputs
