@@ -135,7 +135,7 @@ module "us_east_1b_private_subnets" {
 | `tags`                        | `{}`                  | Additional tags  (_e.g._ `map("BusinessUnit","XYZ")`                                                                                                                                      |    No    |
 | `subnet_names`                | ``                    | List of subnet names (_e.g._ `["kafka", "cassandra", "zookeeper"]`)                                                                                                                       |   Yes    |
 | `max_subnets`                 | `16`                  | Maximum number of subnets that can be created. This variable is being used for CIDR blocks calculation. MUST be greater than length of `names` list                                       |    No    |
-| `availability_zone`           | ``                    | Availability Zone where subnets are created (e.g. `us-east-1a`)                                                                                                                           |   Yes    |
+| `availability_zone`           | ``                    | Availability Zone where subnets are created (_e.g._ `us-east-1a`)                                                                                                                         |   Yes    |
 | `type`                        | `private`             | Type of subnets (`private` or `public`)                                                                                                                                                   |    No    |
 | `vpc_id`                      | ``                    | VPC ID where subnets are created (_e.g._ `vpc-aceb2723`)                                                                                                                                  |   Yes    |
 | `cidr_block`                  | ``                    | Base CIDR block which is divided into subnet CIDR blocks (_e.g._ `10.0.0.0/24`)                                                                                                           |    No    |
@@ -219,7 +219,9 @@ private_named_subnet_ids = {
 }
 ```
 
-and the created subnet IDs could be found by the subnet names using `map["key"]` or [`lookup(map, key, [default])`](https://www.terraform.io/docs/configuration/interpolation.html#lookup-map-key-default-), for example:
+and the created subnet IDs could be found by the subnet names using `map["key"]` or [`lookup(map, key, [default])`](https://www.terraform.io/docs/configuration/interpolation.html#lookup-map-key-default-),
+
+for example:
 
 `public_named_subnet_ids["web1"]`
 
