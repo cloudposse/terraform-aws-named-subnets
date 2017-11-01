@@ -1,3 +1,7 @@
+locals {
+  public_count = "${var.type == "public" ? length(var.subnet_names) : 0}"
+}
+
 module "public_label" {
   source     = "git::https://github.com/cloudposse/terraform-null-label.git?ref=tags/0.2.2"
   namespace  = "${var.namespace}"
@@ -9,7 +13,7 @@ module "public_label" {
 }
 
 resource "aws_subnet" "public" {
-  count             = "${var.type == "public" ? length(var.subnet_names) : 0}"
+  count             = "${local.public_count}"
   vpc_id            = "${var.vpc_id}"
   availability_zone = "${var.availability_zone}"
   cidr_block        = "${cidrsubnet(var.cidr_block, ceil(log(var.max_subnets, 2)), count.index)}"
@@ -24,7 +28,7 @@ resource "aws_subnet" "public" {
 }
 
 resource "aws_route_table" "public" {
-  count  = "${var.type == "public" ? length(var.subnet_names) : 0}"
+  count  = "${local.public_count}"
   vpc_id = "${var.vpc_id}"
 
   tags = {
@@ -35,14 +39,14 @@ resource "aws_route_table" "public" {
 }
 
 resource "aws_route" "public" {
-  count                  = "${var.type == "public" ? length(var.subnet_names) : 0}"
+  count                  = "${local.public_count}"
   route_table_id         = "${element(aws_route_table.public.*.id, count.index)}"
   gateway_id             = "${var.igw_id}"
   destination_cidr_block = "0.0.0.0/0"
 }
 
 resource "aws_route_table_association" "public" {
-  count          = "${var.type == "public" ? length(var.subnet_names) : 0}"
+  count          = "${local.public_count}"
   subnet_id      = "${element(aws_subnet.public.*.id, count.index)}"
   route_table_id = "${element(aws_route_table.public.*.id, count.index)}"
 }
