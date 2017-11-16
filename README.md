@@ -48,6 +48,30 @@ module "private_subnets" {
 }
 ```
 
+Simple example, with `ENI` as default route gateway for private subnets
+
+```terraform
+resource "aws_network_interface" "default" {
+  subnet_id         = "${module.us_east_1b_public_subnets.subnet_ids[0]}"
+  source_dest_check = "false"
+  tags              = "${module.network_interface_label.id}
+}
+
+module "us_east_1b_private_subnets" {
+  source            = "git::https://github.com/cloudposse/terraform-aws-named-subnets.git?ref=master"
+  namespace         = "${var.namespace}"
+  stage             = "${var.stage}"
+  name              = "${var.name}"
+  subnet_names      = ["charlie", "echo", "bravo"]
+  vpc_id            = "${module.vpc.vpc_id}"
+  cidr_block        = "${local.us_east_1b_private_cidr_block}"
+  type              = "private"
+  availability_zone = "us-east-1b"
+  eni_id            = "${aws_network_interface.default.id}"
+  attributes        = ["us-east-1b"]
+}
+```
+
 Full example, with private and public subnets in two Availability Zones for High Availability:
 
 ```terraform
