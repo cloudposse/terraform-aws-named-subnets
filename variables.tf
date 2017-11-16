@@ -146,3 +146,8 @@ variable "enabled" {
   description = "Set to false to prevent the module from creating any resources"
   default     = "true"
 }
+
+variable "nat_enabled" {
+  description = "Flag of creation NAT Gateway"
+  default     = "true"
+}
