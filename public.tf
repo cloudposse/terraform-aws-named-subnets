@@ -3,7 +3,7 @@ locals {
 }
 
 module "public_label" {
-  source     = "git::https://github.com/cloudposse/terraform-null-label.git?ref=tags/0.3.0"
+  source     = "git::https://github.com/cloudposse/terraform-null-label.git?ref=tags/0.3.1"
   namespace  = "${var.namespace}"
   name       = "${var.name}"
   stage      = "${var.stage}"
@@ -62,8 +62,8 @@ resource "aws_network_acl" "public" {
 }
 
 resource "aws_eip" "default" {
-  count = "${var.enabled == "true" && var.type == "public" ? 1 : 0}"
-  vpc   = true
+  count = "${var.enabled == "true" && var.type == "public" && var.nat_enabled == "true" ? 1 : 0}"
+  vpc   = "true"
 
   lifecycle {
     create_before_destroy = true
@@ -71,7 +71,7 @@ resource "aws_eip" "default" {
 }
 
 resource "aws_nat_gateway" "default" {
-  count         = "${var.enabled == "true" && var.type == "public" ? 1 : 0}"
+  count         = "${var.enabled == "true" && var.type == "public" && var.nat_enabled == "true" ? 1 : 0}"
   allocation_id = "${join("", aws_eip.default.*.id)}"
   subnet_id     = "${element(aws_subnet.public.*.id, 0)}"
   tags          = "${module.public_label.tags}"
