@@ -60,23 +60,3 @@ resource "aws_network_acl" "public" {
   ingress    = "${var.public_network_acl_ingress}"
   tags       = "${module.public_label.tags}"
 }
-
-resource "aws_eip" "default" {
-  count = "${var.enabled == "true" && var.type == "public" && var.nat_enabled == "true" ? 1 : 0}"
-  vpc   = "true"
-
-  lifecycle {
-    create_before_destroy = true
-  }
-}
-
-resource "aws_nat_gateway" "default" {
-  count         = "${var.enabled == "true" && var.type == "public" && var.nat_enabled == "true" ? 1 : 0}"
-  allocation_id = "${join("", aws_eip.default.*.id)}"
-  subnet_id     = "${element(aws_subnet.public.*.id, 0)}"
-  tags          = "${module.public_label.tags}"
-
-  lifecycle {
-    create_before_destroy = true
-  }
-}
