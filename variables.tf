@@ -151,3 +151,7 @@ variable "nat_enabled" {
   description = "Flag of creation NAT Gateway"
   default     = "true"
 }
+
+variable "eni_id" {
+  default = ""
+}
