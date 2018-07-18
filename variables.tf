@@ -153,5 +153,6 @@ variable "nat_enabled" {
 }
 
 variable "eni_id" {
-  default = ""
+  default     = ""
+  description = "An ID of a network interface which is used as a default route in private route tables (_e.g._ `eni-9c26a123`)"
 }
