@@ -1,0 +1,296 @@
+---
+#
+# This is the canonical configuration for the `README.md`
+# Run `make readme` to rebuild the `README.md`
+#
+
+# Name of this project
+name: terraform-aws-named-subnets
+
+# Logo for this project
+#logo: docs/logo.png
+
+# License of this project
+license: "APACHE2"
+
+# Canonical GitHub repo
+github_repo: cloudposse/terraform-aws-named-subnets
+
+# Badges to display
+badges:
+  - name: "Build Status"
+    image: "https://travis-ci.org/cloudposse/terraform-aws-named-subnets.svg?branch=master"
+    url: "https://travis-ci.org/cloudposse/terraform-aws-named-subnets"
+  - name: "Latest Release"
+    image: "https://img.shields.io/github/release/cloudposse/terraform-aws-named-subnets.svg"
+    url: "https://github.com/cloudposse/terraform-aws-named-subnets/releases/latest"
+  - name: "Slack Community"
+    image: "https://slack.cloudposse.com/badge.svg"
+    url: "https://slack.cloudposse.com"
+
+related:
+  - name: "terraform-aws-multi-az-subnets"
+    description: "Terraform module for multi-AZ public and private subnets provisioning."
+    url: "https://github.com/cloudposse/terraform-aws-multi-az-subnets"
+  - name: "terraform-aws-dynamic-subnets"
+    description: "Terraform module for public and private subnets provisioning in existing VPC"
+    url: "https://github.com/cloudposse/terraform-aws-dynamic-subnets"
+  - name: "terraform-aws-vpc"
+    description: "Terraform Module that defines a VPC with public/private subnets across multiple AZs with Internet Gateways"
+    url: "https://github.com/cloudposse/terraform-aws-vpc"
+  - name: "terraform-aws-cloudwatch-flow-logs"
+    description: "Terraform module for enabling flow logs for vpc and subnets."
+    url: "https://github.com/cloudposse/terraform-aws-cloudwatch-flow-logs"
+
+# Short description of this project
+description: |-
+  Terraform module for named [`subnets`](http://docs.aws.amazon.com/AmazonVPC/latest/UserGuide/VPC_Subnets.html) provisioning.
+
+# How to use this project
+examples: |-
+  Simple example, with private and public subnets in one Availability Zone:
+
+  ```terraform
+  module "vpc" {
+    source     = "git::https://github.com/cloudposse/terraform-aws-vpc.git?ref=master"
+    namespace  = "${var.namespace}"
+    name       = "vpc"
+    stage      = "${var.stage}"
+    cidr_block = "${var.cidr_block}"
+  }
+
+  locals {
+    public_cidr_block  = "${cidrsubnet(module.vpc.vpc_cidr_block, 1, 0)}"
+    private_cidr_block = "${cidrsubnet(module.vpc.vpc_cidr_block, 1, 1)}"
+  }
+
+  module "public_subnets" {
+    source            = "git::https://github.com/cloudposse/terraform-aws-named-subnets.git?ref=master"
+    namespace         = "${var.namespace}"
+    stage             = "${var.stage}"
+    name              = "${var.name}"
+    subnet_names      = ["web1", "web2", "web3"]
+    vpc_id            = "${module.vpc.vpc_id}"
+    cidr_block        = "${local.public_cidr_block}"
+    type              = "public"
+    igw_id            = "${module.vpc.igw_id}"
+    availability_zone = "us-east-1a"
+  }
+
+  module "private_subnets" {
+    source            = "git::https://github.com/cloudposse/terraform-aws-named-subnets.git?ref=master"
+    namespace         = "${var.namespace}"
+    stage             = "${var.stage}"
+    name              = "${var.name}"
+    subnet_names      = ["kafka", "cassandra", "zookeeper"]
+    vpc_id            = "${module.vpc.vpc_id}"
+    cidr_block        = "${local.private_cidr_block}"
+    type              = "private"
+    availability_zone = "us-east-1a"
+    ngw_id            = "${module.public_subnets.ngw_id}"
+  }
+  ```
+
+  Simple example, with `ENI` as default route gateway for private subnets
+
+  ```terraform
+  resource "aws_network_interface" "default" {
+    subnet_id         = "${module.us_east_1b_public_subnets.subnet_ids[0]}"
+    source_dest_check = "false"
+    tags              = "${module.network_interface_label.id}
+  }
+
+  module "us_east_1b_private_subnets" {
+    source            = "git::https://github.com/cloudposse/terraform-aws-named-subnets.git?ref=master"
+    namespace         = "${var.namespace}"
+    stage             = "${var.stage}"
+    name              = "${var.name}"
+    subnet_names      = ["charlie", "echo", "bravo"]
+    vpc_id            = "${module.vpc.vpc_id}"
+    cidr_block        = "${local.us_east_1b_private_cidr_block}"
+    type              = "private"
+    availability_zone = "us-east-1b"
+    eni_id            = "${aws_network_interface.default.id}"
+    attributes        = ["us-east-1b"]
+  }
+  ```
+
+  Full example, with private and public subnets in two Availability Zones for High Availability:
+
+  ```terraform
+  module "vpc" {
+    source     = "git::https://github.com/cloudposse/terraform-aws-vpc.git?ref=master"
+    namespace  = "${var.namespace}"
+    name       = "vpc"
+    stage      = "${var.stage}"
+    cidr_block = "${var.cidr_block}"
+  }
+
+  locals {
+    us_east_1a_public_cidr_block  = "${cidrsubnet(module.vpc.vpc_cidr_block, 2, 0)}"
+    us_east_1a_private_cidr_block = "${cidrsubnet(module.vpc.vpc_cidr_block, 2, 1)}"
+    us_east_1b_public_cidr_block  = "${cidrsubnet(module.vpc.vpc_cidr_block, 2, 2)}"
+    us_east_1b_private_cidr_block = "${cidrsubnet(module.vpc.vpc_cidr_block, 2, 3)}"
+  }
+
+  module "us_east_1a_public_subnets" {
+    source            = "git::https://github.com/cloudposse/terraform-aws-named-subnets.git?ref=master"
+    namespace         = "${var.namespace}"
+    stage             = "${var.stage}"
+    name              = "${var.name}"
+    subnet_names      = ["apples", "oranges", "grapes"]
+    vpc_id            = "${module.vpc.vpc_id}"
+    cidr_block        = "${local.us_east_1a_public_cidr_block}"
+    type              = "public"
+    igw_id            = "${module.vpc.igw_id}"
+    availability_zone = "us-east-1a"
+    attributes        = ["us-east-1a"]
+  }
+
+  module "us_east_1a_private_subnets" {
+    source            = "git::https://github.com/cloudposse/terraform-aws-named-subnets.git?ref=master"
+    namespace         = "${var.namespace}"
+    stage             = "${var.stage}"
+    name              = "${var.name}"
+    subnet_names      = ["charlie", "echo", "bravo"]
+    vpc_id            = "${module.vpc.vpc_id}"
+    cidr_block        = "${local.us_east_1a_private_cidr_block}"
+    type              = "private"
+    availability_zone = "us-east-1a"
+    ngw_id            = "${module.us_east_1a_public_subnets.ngw_id}"
+    attributes        = ["us-east-1a"]
+  }
+
+  module "us_east_1b_public_subnets" {
+    source            = "git::https://github.com/cloudposse/terraform-aws-named-subnets.git?ref=master"
+    namespace         = "${var.namespace}"
+    stage             = "${var.stage}"
+    name              = "${var.name}"
+    subnet_names      = ["apples", "oranges", "grapes"]
+    vpc_id            = "${module.vpc.vpc_id}"
+    cidr_block        = "${local.us_east_1b_public_cidr_block}"
+    type              = "public"
+    igw_id            = "${module.vpc.igw_id}"
+    availability_zone = "us-east-1b"
+    attributes        = ["us-east-1b"]
+  }
+
+  module "us_east_1b_private_subnets" {
+    source            = "git::https://github.com/cloudposse/terraform-aws-named-subnets.git?ref=master"
+    namespace         = "${var.namespace}"
+    stage             = "${var.stage}"
+    name              = "${var.name}"
+    subnet_names      = ["charlie", "echo", "bravo"]
+    vpc_id            = "${module.vpc.vpc_id}"
+    cidr_block        = "${local.us_east_1b_private_cidr_block}"
+    type              = "private"
+    availability_zone = "us-east-1b"
+    ngw_id            = "${module.us_east_1b_public_subnets.ngw_id}"
+    attributes        = ["us-east-1b"]
+  }
+
+  resource "aws_network_interface" "default" {
+    subnet_id         = "${module.us_east_1b_public_subnets.subnet_ids[0]}"
+    source_dest_check = "false"
+    tags              = "${module.network_interface_label.id}
+  }
+
+  module "us_east_1b_private_subnets" {
+    source            = "git::https://github.com/cloudposse/terraform-aws-named-subnets.git?ref=master"
+    namespace         = "${var.namespace}"
+    stage             = "${var.stage}"
+    name              = "${var.name}"
+    subnet_names      = ["charlie", "echo", "bravo"]
+    vpc_id            = "${module.vpc.vpc_id}"
+    cidr_block        = "${local.us_east_1b_private_cidr_block}"
+    type              = "private"
+    availability_zone = "us-east-1b"
+    eni_id            = "${aws_network_interface.default.id}"
+    attributes        = ["us-east-1b"]
+  }
+
+  ```
+
+  ## Caveat
+  You must use only one type of device for a default route gateway per route table. `ENI` or `NGW`
+
+  Given the following configuration (see the Simple example above)
+
+  ```terraform
+  locals {
+    public_cidr_block  = "${cidrsubnet(var.vpc_cidr, 1, 0)}"
+    private_cidr_block = "${cidrsubnet(var.vpc_cidr, 1, 1)}"
+  }
+
+  module "public_subnets" {
+    source            = "git::https://github.com/cloudposse/terraform-aws-named-subnets.git?ref=master"
+    namespace         = "${var.namespace}"
+    stage             = "${var.stage}"
+    name              = "${var.name}"
+    subnet_names      = ["web1", "web2", "web3"]
+    vpc_id            = "${var.vpc_id}"
+    cidr_block        = "${local.public_cidr_block}"
+    type              = "public"
+    availability_zone = "us-east-1a"
+    igw_id            = "${var.igw_id}"
+  }
+
+  module "private_subnets" {
+    source            = "git::https://github.com/cloudposse/terraform-aws-named-subnets.git?ref=master"
+    namespace         = "${var.namespace}"
+    stage             = "${var.stage}"
+    name              = "${var.name}"
+    subnet_names      = ["kafka", "cassandra", "zookeeper"]
+    vpc_id            = "${var.vpc_id}"
+    cidr_block        = "${local.private_cidr_block}"
+    type              = "private"
+    availability_zone = "us-east-1a"
+    ngw_id            = "${module.public_subnets.ngw_id}"
+  }
+
+  output "private_named_subnet_ids" {
+    value = "${module.private_subnets.named_subnet_ids}"
+  }
+
+  output "public_named_subnet_ids" {
+    value = "${module.public_subnets.named_subnet_ids}"
+  }
+  ```
+
+  the output Maps of subnet names to subnet IDs look like these
+
+  ```terraform
+  public_named_subnet_ids = {
+    web1 = subnet-ea58d78e
+    web2 = subnet-556ee131
+    web3 = subnet-6f54db0b
+  }
+  private_named_subnet_ids = {
+    cassandra = subnet-376de253
+    kafka = subnet-9e53dcfa
+    zookeeper = subnet-a86fe0cc
+  }
+  ```
+
+  and the created subnet IDs could be found by the subnet names using `map["key"]` or [`lookup(map, key, [default])`](https://www.terraform.io/docs/configuration/interpolation.html#lookup-map-key-default-),
+
+  for example:
+
+  `public_named_subnet_ids["web1"]`
+
+  `lookup(private_named_subnet_ids, "kafka")`
+
+include:
+  - "docs/targets.md"
+  - "docs/terraform.md"
+
+# Contributors to this project
+contributors:
+  - name: "Andriy Knysh"
+    github: "aknysh"
+  - name: "Sergey Vasilyev"
+    github: "s2504s"
+  - name: "Vladimir"
+    github: "SweetOps"
+  - name: "Konstantin B"
+    github: "comeanother"
