@@ -7,6 +7,18 @@
 # Name of this project
 name: terraform-aws-named-subnets
 
+# Tags of this project
+tags:
+  - aws
+  - terraform
+  - networking
+  - named
+  - subnets
+
+# Categories of this project
+categories:
+  - terraform-networking
+
 # Logo for this project
 #logo: docs/logo.png
 
