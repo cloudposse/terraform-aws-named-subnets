@@ -12,12 +12,18 @@ tags:
   - aws
   - terraform
   - networking
-  - named
-  - subnets
+  - named-subnets
+  - typescript
+  - availability-zone
+  - subnet
+  - vpc
+  - cidr
+  - calculator
+  - dynamic
 
 # Categories of this project
 categories:
-  - terraform-networking
+  - terraform-modules/networking
 
 # Logo for this project
 #logo: docs/logo.png
