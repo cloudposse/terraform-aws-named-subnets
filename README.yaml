@@ -11,6 +11,7 @@ name: terraform-aws-named-subnets
 tags:
   - aws
   - terraform
+  - terraform-modules
   - networking
   - named-subnets
   - typescript
