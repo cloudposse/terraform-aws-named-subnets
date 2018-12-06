@@ -14,7 +14,6 @@ tags:
   - terraform-modules
   - networking
   - named-subnets
-  - typescript
   - availability-zone
   - subnet
   - vpc
