@@ -330,7 +330,7 @@ Available targets:
 | ngw_id | NAT Gateway ID |
 | ngw_private_ip | Private IP address of the NAT Gateway |
 | ngw_public_ip | Public IP address of the NAT Gateway |
-| route_table_ids | Route Table IDs |
+| route_table_ids | Route table IDs |
 | subnet_ids | Subnet IDs |
 
 
