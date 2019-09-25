@@ -20,5 +20,7 @@ module "subnets" {
   igw_id            = module.vpc.igw_id
   cidr_block        = module.vpc.vpc_cidr_block
   subnet_names      = var.subnet_names
+  max_subnets       = var.max_subnets
   nat_enabled       = var.nat_enabled
+  type              = var.type
 }
