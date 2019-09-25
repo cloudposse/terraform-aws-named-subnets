@@ -13,6 +13,23 @@ name: terraform-aws-named-subnets
 # License of this project
 license: "APACHE2"
 
+# Tags of this project
+tags:
+  - aws
+  - terraform
+  - terraform-modules
+  - networking
+  - named-subnets
+  - availability-zone
+  - subnet
+  - vpc
+  - cidr
+  - dynamic
+
+# Categories of this project
+categories:
+  - terraform-modules/networking
+
 # Canonical GitHub repo
 github_repo: cloudposse/terraform-aws-named-subnets
 
