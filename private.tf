@@ -19,13 +19,13 @@ resource "aws_subnet" "private" {
   availability_zone = var.availability_zone
   cidr_block        = cidrsubnet(var.cidr_block, ceil(log(var.max_subnets, 2)), count.index)
 
-  tags = {
+  tags = merge({
     "Name"      = "${module.private_label.id}${var.delimiter}${element(var.subnet_names, count.index)}"
     "Stage"     = module.private_label.stage
     "Namespace" = module.private_label.namespace
     "Named"     = var.subnet_names[count.index]
     "Type"      = var.type
-  }
+  }, var.tags)
 }
 
 resource "aws_route_table" "private" {
