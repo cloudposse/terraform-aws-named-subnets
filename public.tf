@@ -1,5 +1,5 @@
 locals {
-  public_subnets = var.enabled && var.type == "public" ? var.subnet_names : null
+  public_subnets = var.enabled && var.type == "public" ? var.subnet_names : []
   ngw_count      = var.enabled && var.type == "public" && var.nat_enabled ? 1 : 0
 }
 

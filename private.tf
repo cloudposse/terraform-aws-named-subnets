@@ -1,5 +1,5 @@
 locals {
-  private_count = var.enabled && var.type == "private" ? length(var.subnet_names) : 0
+  private_subnets = var.enabled && var.type == "private" ? var.subnet_names : []
 }
 
 module "private_label" {
@@ -14,49 +14,49 @@ module "private_label" {
 }
 
 resource "aws_subnet" "private" {
-  count             = local.private_count
+  for_each             = toset(local.private_subnets)
   vpc_id            = var.vpc_id
   availability_zone = var.availability_zone
-  cidr_block        = cidrsubnet(var.cidr_block, ceil(log(var.max_subnets, 2)), count.index)
+  cidr_block        = cidrsubnet(var.cidr_block, ceil(log(var.max_subnets, 2)), index(local.private_subnets, each.value))
 
   tags = merge({
-    "Name"      = "${module.private_label.id}${var.delimiter}${element(var.subnet_names, count.index)}"
+    "Name"      = "${module.private_label.id}${var.delimiter}${each.value}"
     "Stage"     = module.private_label.stage
     "Namespace" = module.private_label.namespace
-    "Named"     = var.subnet_names[count.index]
+    "Named"     = each.value
     "Type"      = var.type
   }, var.tags)
 }
 
 resource "aws_route_table" "private" {
-  count  = local.private_count
+  for_each  = toset(local.private_subnets)
   vpc_id = var.vpc_id
 
   tags = {
-    "Name"      = "${module.private_label.id}${var.delimiter}${element(var.subnet_names, count.index)}"
+    "Name"      = "${module.private_label.id}${var.delimiter}${each.value}"
     "Stage"     = module.private_label.stage
     "Namespace" = module.private_label.namespace
   }
 }
 
 resource "aws_route" "private" {
-  count                  = local.private_count
-  route_table_id         = aws_route_table.private.*.id[count.index]
+  for_each                  = toset(local.private_subnets)
+  route_table_id         = aws_route_table.private[each.value].id
   network_interface_id   = var.eni_id
   nat_gateway_id         = var.ngw_id
   destination_cidr_block = "0.0.0.0/0"
 }
 
 resource "aws_route_table_association" "private" {
-  count          = local.private_count
-  subnet_id      = aws_subnet.private.*.id[count.index]
-  route_table_id = aws_route_table.private.*.id[count.index]
+  for_each          = toset(local.private_subnets)
+  subnet_id      = aws_subnet.private[each.value].id
+  route_table_id = aws_route_table.private[each.value].id
 }
 
 resource "aws_network_acl" "private" {
   count      = var.enabled && var.type == "private" && signum(length(var.private_network_acl_id)) == 0 ? 1 : 0
   vpc_id     = data.aws_vpc.default.id
-  subnet_ids = aws_subnet.private.*.id
+  subnet_ids = values(aws_subnet.private)[*].id
 
   dynamic "egress" {
     for_each = var.private_network_acl_egress
