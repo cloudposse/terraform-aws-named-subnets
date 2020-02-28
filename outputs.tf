@@ -14,23 +14,23 @@ output "ngw_public_ip" {
 }
 
 output "subnet_ids" {
-  value       = coalescelist(aws_subnet.private.*.id, aws_subnet.public.*.id)
   description = "Subnet IDs"
+  value       = coalescelist(
+    length(aws_subnet.public) > 0 ? values(aws_subnet.public)[*].id : [],
+    length(aws_subnet.private) > 0 ? values(aws_subnet.private)[*].id : []
+  )
 }
 
 output "route_table_ids" {
-  value       = coalescelist(aws_route_table.public.*.id, aws_route_table.private.*.id)
   description = "Route table IDs"
+  value       = coalescelist(
+    length(aws_route_table.public) > 0 ? values(aws_route_table.public)[*].id : [],
+    length(aws_route_table.private) > 0 ? values(aws_route_table.private)[*].id : []
+  )
 }
 
 output "named_subnet_ids" {
   description = "Map of subnet names to subnet IDs"
 
-  value = zipmap(
-    var.subnet_names,
-    coalescelist(
-      aws_subnet.private.*.id,
-      aws_subnet.public.*.id
-    )
-  )
+  value = aws_subnet.public
 }

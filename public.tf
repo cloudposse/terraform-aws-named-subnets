@@ -1,6 +1,6 @@
 locals {
-  public_count = var.enabled && var.type == "public" ? length(var.subnet_names) : 0
-  ngw_count    = var.enabled && var.type == "public" && var.nat_enabled ? 1 : 0
+  public_subnets = var.enabled && var.type == "public" ? var.subnet_names : null
+  ngw_count      = var.enabled && var.type == "public" && var.nat_enabled ? 1 : 0
 }
 
 module "public_label" {
@@ -15,48 +15,48 @@ module "public_label" {
 }
 
 resource "aws_subnet" "public" {
-  count             = local.public_count
+  for_each          = toset(local.public_subnets)
   vpc_id            = var.vpc_id
   availability_zone = var.availability_zone
-  cidr_block        = cidrsubnet(var.cidr_block, ceil(log(var.max_subnets, 2)), count.index)
+  cidr_block        = cidrsubnet(var.cidr_block, ceil(log(var.max_subnets, 2)), index(local.public_subnets, each.value))
 
   tags = merge({
-    "Name"      = "${module.public_label.id}${var.delimiter}${element(var.subnet_names, count.index)}"
+    "Name"      = "${module.public_label.id}${var.delimiter}${each.value}"
     "Stage"     = module.public_label.stage
     "Namespace" = module.public_label.namespace
-    "Named"     = var.subnet_names[count.index]
+    "Named"     = each.value
     "Type"      = var.type
   }, var.tags)
 }
 
 resource "aws_route_table" "public" {
-  count  = local.public_count
+  for_each  = toset(local.public_subnets)
   vpc_id = var.vpc_id
 
   tags = {
-    "Name"      = "${module.public_label.id}${var.delimiter}${element(var.subnet_names, count.index)}"
+    "Name"      = "${module.public_label.id}${var.delimiter}${each.value}"
     "Stage"     = module.public_label.stage
     "Namespace" = module.public_label.namespace
   }
 }
 
 resource "aws_route" "public" {
-  count                  = local.public_count
-  route_table_id         = aws_route_table.public.*.id[count.index]
+  for_each                  = toset(local.public_subnets)
+  route_table_id         = aws_route_table.public[each.value].id
   gateway_id             = var.igw_id
   destination_cidr_block = "0.0.0.0/0"
 }
 
 resource "aws_route_table_association" "public" {
-  count          = local.public_count
-  subnet_id      = aws_subnet.public.*.id[count.index]
-  route_table_id = aws_route_table.public.*.id[count.index]
+  for_each          = toset(local.public_subnets)
+  subnet_id      = aws_subnet.public[each.value].id
+  route_table_id = aws_route_table.public[each.value].id
 }
 
 resource "aws_network_acl" "public" {
   count      = var.enabled && var.type == "public" && signum(length(var.public_network_acl_id)) == 0 ? 1 : 0
   vpc_id     = data.aws_vpc.default.id
-  subnet_ids = aws_subnet.public.*.id
+  subnet_ids = values(aws_subnet.public)[*].id
 
   dynamic "egress" {
     for_each = var.public_network_acl_egress

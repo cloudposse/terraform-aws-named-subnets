@@ -194,7 +194,7 @@ variable "enabled" {
 variable "nat_enabled" {
   type        = bool
   description = "Enable/disable NAT Gateway"
-  default     = true
+  default     = false
 }
 
 variable "eni_id" {
