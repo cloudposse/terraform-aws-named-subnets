@@ -15,7 +15,7 @@ output "ngw_public_ip" {
 
 output "subnet_ids" {
   description = "Subnet IDs"
-  value       = coalescelist(
+  value = coalescelist(
     length(aws_subnet.public) > 0 ? values(aws_subnet.public)[*].id : [],
     length(aws_subnet.private) > 0 ? values(aws_subnet.private)[*].id : []
   )
@@ -23,7 +23,7 @@ output "subnet_ids" {
 
 output "route_table_ids" {
   description = "Route table IDs"
-  value       = coalescelist(
+  value = coalescelist(
     length(aws_route_table.public) > 0 ? values(aws_route_table.public)[*].id : [],
     length(aws_route_table.private) > 0 ? values(aws_route_table.private)[*].id : []
   )

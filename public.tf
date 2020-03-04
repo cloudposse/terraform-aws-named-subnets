@@ -30,8 +30,8 @@ resource "aws_subnet" "public" {
 }
 
 resource "aws_route_table" "public" {
-  for_each  = toset(local.public_subnets)
-  vpc_id = var.vpc_id
+  for_each = toset(local.public_subnets)
+  vpc_id   = var.vpc_id
 
   tags = {
     "Name"      = "${module.public_label.id}${var.delimiter}${each.value}"
@@ -41,14 +41,14 @@ resource "aws_route_table" "public" {
 }
 
 resource "aws_route" "public" {
-  for_each                  = toset(local.public_subnets)
+  for_each               = toset(local.public_subnets)
   route_table_id         = aws_route_table.public[each.value].id
   gateway_id             = var.igw_id
   destination_cidr_block = "0.0.0.0/0"
 }
 
 resource "aws_route_table_association" "public" {
-  for_each          = toset(local.public_subnets)
+  for_each       = toset(local.public_subnets)
   subnet_id      = aws_subnet.public[each.value].id
   route_table_id = aws_route_table.public[each.value].id
 }

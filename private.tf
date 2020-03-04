@@ -14,7 +14,7 @@ module "private_label" {
 }
 
 resource "aws_subnet" "private" {
-  for_each             = toset(local.private_subnets)
+  for_each          = toset(local.private_subnets)
   vpc_id            = var.vpc_id
   availability_zone = var.availability_zone
   cidr_block        = cidrsubnet(var.cidr_block, ceil(log(var.max_subnets, 2)), index(local.private_subnets, each.value))
@@ -29,8 +29,8 @@ resource "aws_subnet" "private" {
 }
 
 resource "aws_route_table" "private" {
-  for_each  = toset(local.private_subnets)
-  vpc_id = var.vpc_id
+  for_each = toset(local.private_subnets)
+  vpc_id   = var.vpc_id
 
   tags = {
     "Name"      = "${module.private_label.id}${var.delimiter}${each.value}"
@@ -40,7 +40,7 @@ resource "aws_route_table" "private" {
 }
 
 resource "aws_route" "private" {
-  for_each                  = toset(local.private_subnets)
+  for_each               = toset(local.private_subnets)
   route_table_id         = aws_route_table.private[each.value].id
   network_interface_id   = var.eni_id
   nat_gateway_id         = var.ngw_id
@@ -48,7 +48,7 @@ resource "aws_route" "private" {
 }
 
 resource "aws_route_table_association" "private" {
-  for_each          = toset(local.private_subnets)
+  for_each       = toset(local.private_subnets)
   subnet_id      = aws_subnet.private[each.value].id
   route_table_id = aws_route_table.private[each.value].id
 }
