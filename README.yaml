@@ -1,4 +1,3 @@
----
 #
 # This is the canonical configuration for the `README.md`
 # Run `make readme` to rebuild the `README.md`
@@ -6,13 +5,11 @@
 
 # Name of this project
 name: terraform-aws-named-subnets
-
 # Logo for this project
 #logo: docs/logo.png
 
 # License of this project
 license: "APACHE2"
-
 # Tags of this project
 tags:
   - aws
@@ -25,26 +22,19 @@ tags:
   - vpc
   - cidr
   - dynamic
-
 # Categories of this project
 categories:
   - terraform-modules/networking
-
 # Canonical GitHub repo
 github_repo: cloudposse/terraform-aws-named-subnets
-
 # Badges to display
 badges:
-  - name: "Codefresh Build Status"
-    image: "https://g.codefresh.io/api/badges/pipeline/cloudposse/terraform-modules%2Fterraform-aws-named-subnets?type=cf-1"
-    url: "https://g.codefresh.io/public/accounts/cloudposse/pipelines/5d2f63aa58ad25c1f8ee8e94"
   - name: "Latest Release"
     image: "https://img.shields.io/github/release/cloudposse/terraform-aws-named-subnets.svg"
     url: "https://github.com/cloudposse/terraform-aws-named-subnets/releases/latest"
   - name: "Slack Community"
     image: "https://slack.cloudposse.com/badge.svg"
     url: "https://slack.cloudposse.com"
-
 related:
   - name: "terraform-aws-multi-az-subnets"
     description: "Terraform module for multi-AZ public and private subnets provisioning."
@@ -58,13 +48,11 @@ related:
   - name: "terraform-aws-cloudwatch-flow-logs"
     description: "Terraform module for enabling flow logs for vpc and subnets."
     url: "https://github.com/cloudposse/terraform-aws-cloudwatch-flow-logs"
-
 # Short description of this project
 description: |-
   Terraform module for named [`subnets`](http://docs.aws.amazon.com/AmazonVPC/latest/UserGuide/VPC_Subnets.html) provisioning.
-
 # How to use this project
-usage: |-
+usage: |2-
 
   Simple example, with private and public subnets in one Availability Zone:
 
@@ -296,12 +284,9 @@ usage: |-
   `public_named_subnet_ids["web1"]`
 
   `lookup(private_named_subnet_ids, "kafka")`
-
-
 include:
   - "docs/targets.md"
   - "docs/terraform.md"
-
 # Contributors to this project
 contributors:
   - name: "Erik Osterman"
