@@ -315,6 +315,7 @@ Available targets:
 
 ```
 <!-- markdownlint-restore -->
+<!-- markdownlint-disable -->
 ## Requirements
 
 | Name | Version |
@@ -340,6 +341,7 @@ Available targets:
 | enabled | Set to false to prevent the module from creating any resources | `bool` | `true` | no |
 | eni\_id | An ID of a network interface which is used as a default route in private route tables (\_e.g.\_ `eni-9c26a123`) | `string` | `""` | no |
 | igw\_id | Internet Gateway ID which will be used as a default route in public route tables (e.g. `igw-9c26a123`). Conflicts with `ngw_id` | `string` | `""` | no |
+| map\_public\_ip\_on\_launch\_enabled | Enable/disable map\_public\_ip\_on\_launch subnet attribute. | `bool` | `false` | no |
 | max\_subnets | Maximum number of subnets which can be created. This variable is being used for CIDR blocks calculation. Defaults to length of `subnet_names` argument | `number` | `16` | no |
 | name | Application or solution name | `string` | n/a | yes |
 | namespace | Namespace (e.g. `eg` or `cp`) | `string` | `""` | no |
@@ -368,6 +370,7 @@ Available targets:
 | route\_table\_ids | Route table IDs |
 | subnet\_ids | Subnet IDs |
 
+<!-- markdownlint-restore -->
 
 
 
