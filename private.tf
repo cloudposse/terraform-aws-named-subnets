@@ -1,16 +1,13 @@
 locals {
-  private_count = var.enabled && var.type == "private" ? length(var.subnet_names) : 0
+  private_count = module.this.enabled && var.type == "private" ? length(var.subnet_names) : 0
 }
 
 module "private_label" {
-  source     = "git::https://github.com/cloudposse/terraform-null-label.git?ref=tags/0.17.0"
-  namespace  = var.namespace
-  name       = var.name
-  stage      = var.stage
-  delimiter  = var.delimiter
-  tags       = var.tags
-  attributes = compact(concat(var.attributes, ["private"]))
-  enabled    = var.enabled
+  source = "git::https://github.com/cloudposse/terraform-null-label.git?ref=tags/0.19.2"
+
+  attributes = compact(concat(module.this.attributes, ["private"]))
+
+  context = module.this.context
 }
 
 resource "aws_subnet" "private" {
@@ -55,7 +52,7 @@ resource "aws_route_table_association" "private" {
 }
 
 resource "aws_network_acl" "private" {
-  count      = var.enabled && var.type == "private" && signum(length(var.private_network_acl_id)) == 0 ? 1 : 0
+  count      = module.this.enabled && var.type == "private" && signum(length(var.private_network_acl_id)) == 0 ? 1 : 0
   vpc_id     = data.aws_vpc.default.id
   subnet_ids = aws_subnet.private.*.id
 

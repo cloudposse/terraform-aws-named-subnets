@@ -1,17 +1,14 @@
 locals {
-  public_count = var.enabled && var.type == "public" ? length(var.subnet_names) : 0
-  ngw_count    = var.enabled && var.type == "public" && var.nat_enabled ? 1 : 0
+  public_count = module.this.enabled && var.type == "public" ? length(var.subnet_names) : 0
+  ngw_count    = module.this.enabled && var.type == "public" && var.nat_enabled ? 1 : 0
 }
 
 module "public_label" {
-  source     = "git::https://github.com/cloudposse/terraform-null-label.git?ref=tags/0.17.0"
-  namespace  = var.namespace
-  name       = var.name
-  stage      = var.stage
-  delimiter  = var.delimiter
-  tags       = var.tags
-  attributes = compact(concat(var.attributes, ["public"]))
-  enabled    = var.enabled
+  source = "git::https://github.com/cloudposse/terraform-null-label.git?ref=tags/0.19.2"
+
+  attributes = compact(concat(module.this.attributes, ["public"]))
+
+  context = module.this.context
 }
 
 resource "aws_subnet" "public" {
@@ -55,7 +52,7 @@ resource "aws_route_table_association" "public" {
 }
 
 resource "aws_network_acl" "public" {
-  count      = var.enabled && var.type == "public" && signum(length(var.public_network_acl_id)) == 0 ? 1 : 0
+  count      = module.this.enabled && var.type == "public" && signum(length(var.public_network_acl_id)) == 0 ? 1 : 0
   vpc_id     = data.aws_vpc.default.id
   subnet_ids = aws_subnet.public.*.id
 
