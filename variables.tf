@@ -202,3 +202,9 @@ variable "eni_id" {
   default     = ""
   description = "An ID of a network interface which is used as a default route in private route tables (_e.g._ `eni-9c26a123`)"
 }
+
+variable "map_public_ip_on_launch_enabled" {
+  type        = bool
+  default     = false
+  description = "Enable/disable map_public_ip_on_launch subnet attribute."
+}
