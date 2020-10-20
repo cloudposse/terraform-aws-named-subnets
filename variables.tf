@@ -150,12 +150,6 @@ variable "private_network_acl_ingress" {
   ]
 }
 
-variable "enabled" {
-  type        = bool
-  description = "Set to false to prevent the module from creating any resources"
-  default     = true
-}
-
 variable "nat_enabled" {
   type        = bool
   description = "Enable/disable NAT Gateway"
