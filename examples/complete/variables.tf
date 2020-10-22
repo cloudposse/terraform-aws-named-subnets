@@ -6,18 +6,6 @@ variable "availability_zone" {
   type = string
 }
 
-variable "namespace" {
-  type = string
-}
-
-variable "name" {
-  type = string
-}
-
-variable "stage" {
-  type = string
-}
-
 variable "subnet_names" {
   type = list(string)
 }

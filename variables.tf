@@ -1,38 +1,3 @@
-variable "namespace" {
-  description = "Namespace (e.g. `eg` or `cp`)"
-  type        = string
-  default     = ""
-}
-
-variable "stage" {
-  description = "Stage (e.g. `prod`, `dev`, `staging`)"
-  type        = string
-  default     = ""
-}
-
-variable "name" {
-  type        = string
-  description = "Application or solution name"
-}
-
-variable "delimiter" {
-  type        = string
-  default     = "-"
-  description = "Delimiter to be used between `name`, `namespace`, `stage`, `attributes`"
-}
-
-variable "attributes" {
-  type        = list(string)
-  default     = []
-  description = "Additional attributes (e.g. `policy` or `role`)"
-}
-
-variable "tags" {
-  type        = map(string)
-  default     = {}
-  description = "Additional tags (e.g. map(`BusinessUnit`,`XYZ`)"
-}
-
 variable "subnet_names" {
   type        = list(string)
   description = "List of subnet names (e.g. `['apples', 'oranges', 'grapes']`)"
@@ -183,12 +148,6 @@ variable "private_network_acl_ingress" {
       protocol   = "-1"
     }
   ]
-}
-
-variable "enabled" {
-  type        = bool
-  description = "Set to false to prevent the module from creating any resources"
-  default     = true
 }
 
 variable "nat_enabled" {
