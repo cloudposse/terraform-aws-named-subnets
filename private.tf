@@ -18,7 +18,7 @@ resource "aws_subnet" "private" {
   map_public_ip_on_launch = var.map_public_ip_on_launch_enabled
 
   tags = merge({
-    "Name"      = "${module.private_label.id}${var.delimiter}${element(var.subnet_names, count.index)}"
+    "Name"      = "${module.private_label.id}${module.this.delimiter}${element(var.subnet_names, count.index)}"
     "Stage"     = module.private_label.stage
     "Namespace" = module.private_label.namespace
     "Named"     = var.subnet_names[count.index]
@@ -31,7 +31,7 @@ resource "aws_route_table" "private" {
   vpc_id = var.vpc_id
 
   tags = {
-    "Name"      = "${module.private_label.id}${var.delimiter}${element(var.subnet_names, count.index)}"
+    "Name"      = "${module.private_label.id}${module.this.delimiter}${element(var.subnet_names, count.index)}"
     "Stage"     = module.private_label.stage
     "Namespace" = module.private_label.namespace
   }
