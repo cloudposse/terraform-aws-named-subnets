@@ -4,9 +4,9 @@ locals {
 
 module "private_label" {
   source  = "cloudposse/label/null"
-  version = "0.19.2"
+  version = "0.22.1"
 
-  attributes = compact(concat(module.this.attributes, ["private"]))
+  attributes = ["private"]
 
   context = module.this.context
 }
