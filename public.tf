@@ -96,6 +96,8 @@ resource "aws_eip" "default" {
   lifecycle {
     create_before_destroy = true
   }
+
+  tags = module.public_label.tags
 }
 
 resource "aws_nat_gateway" "default" {
