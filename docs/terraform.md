@@ -13,6 +13,27 @@
 |------|---------|
 | aws | >= 2.0 |
 
+## Modules
+
+| Name | Source | Version |
+|------|--------|---------|
+| private_label | cloudposse/label/null | 0.24.1 |
+| public_label | cloudposse/label/null | 0.24.1 |
+| this | cloudposse/label/null | 0.24.1 |
+
+## Resources
+
+| Name |
+|------|
+| [aws_eip](https://registry.terraform.io/providers/hashicorp/aws/2.0/docs/resources/eip) |
+| [aws_nat_gateway](https://registry.terraform.io/providers/hashicorp/aws/2.0/docs/resources/nat_gateway) |
+| [aws_network_acl](https://registry.terraform.io/providers/hashicorp/aws/2.0/docs/resources/network_acl) |
+| [aws_route](https://registry.terraform.io/providers/hashicorp/aws/2.0/docs/resources/route) |
+| [aws_route_table](https://registry.terraform.io/providers/hashicorp/aws/2.0/docs/resources/route_table) |
+| [aws_route_table_association](https://registry.terraform.io/providers/hashicorp/aws/2.0/docs/resources/route_table_association) |
+| [aws_subnet](https://registry.terraform.io/providers/hashicorp/aws/2.0/docs/resources/subnet) |
+| [aws_vpc](https://registry.terraform.io/providers/hashicorp/aws/2.0/docs/data-sources/vpc) |
+
 ## Inputs
 
 | Name | Description | Type | Default | Required |
@@ -60,5 +81,4 @@
 | ngw\_public\_ip | Public IP address of the NAT Gateway |
 | route\_table\_ids | Route table IDs |
 | subnet\_ids | Subnet IDs |
-
 <!-- markdownlint-restore -->
