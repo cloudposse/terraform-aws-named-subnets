@@ -17,7 +17,3 @@ variable "max_subnets" {
 variable "type" {
   type = string
 }
-
-variable "nat_enabled" {
-  type = bool
-}

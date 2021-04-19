@@ -32,13 +32,13 @@ variable "cidr_block" {
 
 variable "igw_id" {
   type        = string
-  description = "Internet Gateway ID which will be used as a default route in public route tables (e.g. `igw-9c26a123`). Conflicts with `ngw_id`"
+  description = "Internet Gateway ID which will be used as a default route in public route tables (e.g. `igw-9c26a123`)."
   default     = ""
 }
 
 variable "ngw_id" {
   type        = string
-  description = "NAT Gateway ID which will be used as a default route in private route tables (e.g. `igw-9c26a123`). Conflicts with `igw_id`"
+  description = "NAT Gateway ID which will be used as a default route in private route tables (e.g. `igw-9c26a123`). Conflicts with `eni_id`."
   default     = ""
 }
 
@@ -159,7 +159,7 @@ variable "nat_enabled" {
 variable "eni_id" {
   type        = string
   default     = ""
-  description = "An ID of a network interface which is used as a default route in private route tables (_e.g._ `eni-9c26a123`)"
+  description = "An ID of a network interface which is used as a default route in private route tables (_e.g._ `eni-9c26a123`).  Conflicts with `ngw_id`."
 }
 
 variable "map_public_ip_on_launch_enabled" {
