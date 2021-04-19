@@ -15,5 +15,3 @@ subnet_names = ["subnet1", "subnet2"]
 max_subnets = 2
 
 type = "public"
-
-nat_enabled = false
