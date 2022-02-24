@@ -18,12 +18,10 @@ resource "aws_subnet" "private" {
   cidr_block              = cidrsubnet(var.cidr_block, ceil(log(var.max_subnets, 2)), count.index)
   map_public_ip_on_launch = var.map_public_ip_on_launch_enabled
 
-  tags = merge({
-    "Name"      = "${module.private_label.id}${module.this.delimiter}${element(var.subnet_names, count.index)}"
-    "Stage"     = module.private_label.stage
-    "Namespace" = module.private_label.namespace
-    "Named"     = var.subnet_names[count.index]
-    "Type"      = var.type
+  tags = merge(module.private_label.tags, {
+    "Name"  = "${module.private_label.id}${module.this.delimiter}${element(var.subnet_names, count.index)}"
+    "Named" = var.subnet_names[count.index]
+    "Type"  = var.type
   }, var.tags)
 }
 
@@ -31,11 +29,9 @@ resource "aws_route_table" "private" {
   count  = local.private_count
   vpc_id = var.vpc_id
 
-  tags = {
-    "Name"      = "${module.private_label.id}${module.this.delimiter}${element(var.subnet_names, count.index)}"
-    "Stage"     = module.private_label.stage
-    "Namespace" = module.private_label.namespace
-  }
+  tags = merge(module.private_label.tags, {
+    "Name" = "${module.private_label.id}${module.this.delimiter}${element(var.subnet_names, count.index)}"
+  })
 }
 
 resource "aws_route" "private" {
