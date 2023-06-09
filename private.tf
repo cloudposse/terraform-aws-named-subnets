@@ -36,7 +36,7 @@ resource "aws_route_table" "private" {
 
 resource "aws_route" "private" {
   count                  = local.private_count
-  route_table_id         = aws_route_table.private.*.id[count.index]
+  route_table_id         = aws_route_table.private[*].id[count.index]
   network_interface_id   = var.eni_id == "" ? null : var.eni_id
   nat_gateway_id         = var.ngw_id == "" ? null : var.ngw_id
   destination_cidr_block = "0.0.0.0/0"
@@ -44,14 +44,14 @@ resource "aws_route" "private" {
 
 resource "aws_route_table_association" "private" {
   count          = local.private_count
-  subnet_id      = aws_subnet.private.*.id[count.index]
-  route_table_id = aws_route_table.private.*.id[count.index]
+  subnet_id      = aws_subnet.private[*].id[count.index]
+  route_table_id = aws_route_table.private[*].id[count.index]
 }
 
 resource "aws_network_acl" "private" {
   count      = module.this.enabled && var.type == "private" && signum(length(var.private_network_acl_id)) == 0 ? 1 : 0
   vpc_id     = data.aws_vpc.default.id
-  subnet_ids = aws_subnet.private.*.id
+  subnet_ids = aws_subnet.private[*].id
 
   dynamic "egress" {
     for_each = var.private_network_acl_egress

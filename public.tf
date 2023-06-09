@@ -37,21 +37,21 @@ resource "aws_route_table" "public" {
 
 resource "aws_route" "public" {
   count                  = local.public_count
-  route_table_id         = aws_route_table.public.*.id[count.index]
+  route_table_id         = aws_route_table.public[*].id[count.index]
   gateway_id             = var.igw_id == "" ? null : var.igw_id
   destination_cidr_block = "0.0.0.0/0"
 }
 
 resource "aws_route_table_association" "public" {
   count          = local.public_count
-  subnet_id      = aws_subnet.public.*.id[count.index]
-  route_table_id = aws_route_table.public.*.id[count.index]
+  subnet_id      = aws_subnet.public[*].id[count.index]
+  route_table_id = aws_route_table.public[*].id[count.index]
 }
 
 resource "aws_network_acl" "public" {
   count      = module.this.enabled && var.type == "public" && signum(length(var.public_network_acl_id)) == 0 ? 1 : 0
   vpc_id     = data.aws_vpc.default.id
-  subnet_ids = aws_subnet.public.*.id
+  subnet_ids = aws_subnet.public[*].id
 
   dynamic "egress" {
     for_each = var.public_network_acl_egress
@@ -98,8 +98,8 @@ resource "aws_eip" "default" {
 
 resource "aws_nat_gateway" "default" {
   count         = local.ngw_count
-  allocation_id = join("", aws_eip.default.*.id)
-  subnet_id     = aws_subnet.public.*.id[0]
+  allocation_id = join("", aws_eip.default[*].id)
+  subnet_id     = aws_subnet.public[*].id[0]
   tags          = module.public_label.tags
 
   lifecycle {
