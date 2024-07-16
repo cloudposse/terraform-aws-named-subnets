@@ -5,3 +5,4 @@ repository:
   description: 'DEPRECATED (use cloudposse/terraform-aws-dynamic-subnets instead): Terraform module for named subnets provisioning.'
   homepage: https://cloudposse.com/accelerate
   topics: terraform-module, availability-zone, subnet, aws, vpc, cidr, calculator, dynamic, hcl2
+
