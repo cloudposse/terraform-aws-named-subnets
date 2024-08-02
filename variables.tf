@@ -42,6 +42,12 @@ variable "ngw_id" {
   default     = ""
 }
 
+variable "tgw_id" {
+  type        = string
+  description = "Transit Gateway ID which will be used to route private route tables to a transit gateway."
+  default     = ""
+}
+
 variable "public_network_acl_id" {
   type        = string
   description = "Network ACL ID that will be added to the subnets. If empty, a new ACL will be created "
